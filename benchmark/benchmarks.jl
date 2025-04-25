@@ -8,13 +8,13 @@ SUITE = BenchmarkGroup()
 # Define different graph configurations for benchmarking
 const GRAPH_SIZES = [
     (name = :small, vars = 100, facts = 50),
-    (name = :medium, vars = 1000, facts = 500)
+    (name = :medium, vars = 1000, facts = 500),
     (name = :large, vars = 10000, facts = 5000)
 ]
 
 const EDGE_DENSITIES = [
     (name = :sparse, connections = 2),   # average connections per node
-    (name = :medium, connections = 5)   # average connections per node  
+    (name = :medium, connections = 5),   # average connections per node  
     (name = :dense, connections = 10)    # average connections per node
 ]
 
