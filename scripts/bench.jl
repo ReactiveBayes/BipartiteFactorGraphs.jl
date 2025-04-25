@@ -4,7 +4,7 @@ using BenchmarkTools
 using PkgBenchmark
 using Dates
 
-mkpath("results")
+mkpath(joinpath(pwd(), "benchmark", "results"))
 
 s = ArgParseSettings()
 
@@ -21,9 +21,12 @@ branch = args["compare-branch"]
 outputdir = joinpath(pwd(), "benchmark", "results")
 
 if !isnothing(branch)
-    name = first(ARGS)
+    name = branch
     result = BenchmarkTools.judge(
-        PkgName, name; retune = true, judgekwargs = Dict(:time_tolerance => 0.1, :memory_tolerance => 0.05)
+        BipartiteFactorGraphs,
+        name;
+        retune = true,
+        judgekwargs = Dict(:time_tolerance => 0.1, :memory_tolerance => 0.05)
     )
     export_markdown(joinpath(outputdir, "benchmark_vs_$(name)_result.md"), result)
 else

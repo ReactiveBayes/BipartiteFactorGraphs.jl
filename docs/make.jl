@@ -10,7 +10,12 @@ makedocs(;
     format = Documenter.HTML(;
         canonical = "https://ReactiveBayes.github.io/BipartiteFactorGraphs.jl", edit_link = "main", assets = String[]
     ),
-    pages = ["Home" => "index.md"]
+    pages = [
+        "Home" => "index.md",
+        "Usage Guide" => "usage.md",
+        "API Reference" => "api.md",
+        "Performance Benchmarks" => "benchmarks.md"
+    ]
 )
 
 deploydocs(; repo = "github.com/ReactiveBayes/BipartiteFactorGraphs.jl", devbranch = "main")
