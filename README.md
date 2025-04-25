@@ -1,69 +1,73 @@
-# PkgName
+# BipartiteFactorGraphs.jl
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://username.github.io/BipartiteFactorGraphs.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://username.github.io/BipartiteFactorGraphs.jl/dev/)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://reactiveBayes.github.io/BipartiteFactorGraphs.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://reactiveBayes.github.io/BipartiteFactorGraphs.jl/dev/)
 [![Build Status](https://github.com/ReactiveBayes/BipartiteFactorGraphs.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ReactiveBayes/BipartiteFactorGraphs.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/ReactiveBayes/BipartiteFactorGraphs.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/ReactiveBayes/BipartiteFactorGraphs.jl)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
-## About
+A Julia package for working with bipartite factor graphs, providing efficient data structures and algorithms for graph-based probabilistic inference.
 
-This is a template for creating new Julia packages. When you create a repository from this template, a GitHub action will automatically:
+## Installation
 
-1. Update the package name to match your repository name
-2. Generate a new UUID for your package
-3. Replace placeholder values with appropriate defaults
-4. Rename source files to match your package name
+```julia
+using Pkg
+Pkg.add("BipartiteFactorGraphs")
+```
+
+Or in Julia REPL press `]` to enter Pkg mode:
+
+```julia
+] add BipartiteFactorGraphs
+```
 
 ## Features
 
-- Comprehensive CI setup with GitHub Actions
-- Documentation generation with Documenter.jl
-- Test suite with TestItemRunner.jl and Aqua.jl
-- Code quality checks with JET.jl
-- Benchmarking setup
-- Standardized project structure
+- Flexible representation of bipartite factor graphs
+- Efficient manipulation of graph structure
+- Support for common graph operations
+- Type-stable implementation for performance
 
-## How to Use
+## Basic Usage
 
-1. Click "Use this template" to create a new repository
-2. Create a Personal Access Token (PAT) and add it to your repository (see section below)
-3. Wait for the initialization workflow to complete
-4. Clone your new repository
-5. Start developing your package!
+```julia
+using BipartiteFactorGraphs
 
-## Required: Personal Access Token Setup
+# Create a new factor graph
+g = BipartiteFactorGraph()
 
-For the initialization workflow to work properly, you need to set up a Personal Access Token (PAT):
+# Add variable and factor nodes
+v1 = add_variable!(g)
+v2 = add_variable!(g)
+f1 = add_factor!(g, [v1, v2])
 
-1. Create a Personal Access Token:
-   - Go to your GitHub account → Settings → Developer settings → Personal access tokens → Tokens (classic)
-   - Click "Generate new token" (classic)
-   - Give it a descriptive name (e.g., "Package Template Initialize")
-   - Set an appropriate expiration
-   - Select the `repo` scope (full control of repositories)
-   - Click "Generate token"
-   - Copy the generated token (you won't see it again!)
+# Check connectivity
+@assert is_connected(v1, f1)
+@assert is_connected(v2, f1)
 
-2. Add the token to your repository:
-   - Go to your newly created repository
-   - Go to Settings → Secrets and variables → Actions
-   - Click "New repository secret"
-   - Name: `PAT_TOKEN`
-   - Value: paste your copied token
-   - Click "Add secret"
+# Access node neighbors
+neighbors_of_v1 = neighbors(g, v1)
+neighbors_of_f1 = neighbors(g, f1)
 
-This token allows the initialization workflow to commit changes to workflow files in your repository.
+# Get graph properties
+@assert num_variables(g) == 2
+@assert num_factors(g) == 1
+```
 
-## Custom Configuration
+## Documentation
 
-After creating your repository, you may want to:
+For more detailed information about the package functionality, please refer to the [documentation](https://reactiveBayes.github.io/BipartiteFactorGraphs.jl/stable/).
 
-- Update author information in `Project.toml`
-- Modify documentation settings in `docs/make.jl`
-- Adjust CI settings in `.github/workflows/`
-- Edit or extend the test suite in `test/`
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
 
 ## License
 
-This template is licensed under MIT (see the LICENSE file). You are free to choose a different license for your own package.
+This package is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
