@@ -29,6 +29,14 @@ export BipartiteFactorGraph,
     outdegree,
     density
 
+struct UnorderedPair{T}
+    a::T
+    b::T
+end
+
+Base.hash(p::UnorderedPair) = hash(p.a) + hash(p.b)
+Base.:(==)(p1::UnorderedPair, p2::UnorderedPair) = (p1.a == p2.a && p1.b == p2.b) || (p1.a == p2.b && p1.b == p2.a)
+
 """
     BipartiteFactorGraph{TVar,TFac,E,DVars<:AbstractDict{Int,TVar},DFacs<:AbstractDict{Int,TFac},DE<:AbstractDict{Tuple{Int,Int},E}}
 
@@ -47,7 +55,7 @@ struct BipartiteFactorGraph{
     E,
     DVars <: AbstractDict{Int, TVar},
     DFacs <: AbstractDict{Int, TFac},
-    DE <: AbstractDict{Tuple{Int, Int}, E}
+    DE <: AbstractDict{UnorderedPair, E}
 }
     graph::SimpleGraph{Int}
     variable_data::DVars
@@ -62,10 +70,8 @@ Construct an empty BipartiteFactorGraph with specified variable, factor and edge
 Optionally specify a dictionary type (defaults to Base.Dict).
 """
 function BipartiteFactorGraph{TVar, TFac, E}(dict_type = Dict) where {TVar, TFac, E}
-    return BipartiteFactorGraph{
-        TVar, TFac, E, dict_type{Int, TVar}, dict_type{Int, TFac}, dict_type{Tuple{Int, Int}, E}
-    }(
-        SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{Tuple{Int, Int}, E}()
+    return BipartiteFactorGraph{TVar, TFac, E, dict_type{Int, TVar}, dict_type{Int, TFac}, dict_type{UnorderedPair, E}}(
+        SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{UnorderedPair, E}()
     )
 end
 
@@ -103,7 +109,8 @@ in either order using get_edge_data.
 """
 function add_edge!(g::BipartiteFactorGraph{TVar, TFac, E}, var::Int, fac::Int, data::E) where {TVar, TFac, E}
     if Graphs.add_edge!(g.graph, var, fac)
-        g.edge_data[(var, fac)] = data
+        p = UnorderedPair(var, fac)
+        g.edge_data[p] = data
         return true
     end
     return false
@@ -115,7 +122,7 @@ end
 Get data associated with variable node v.
 """
 function get_variable_data(g::BipartiteFactorGraph{TVar}, v::Int) where {TVar}
-    return g.variable_data[v]::TVar
+    return g.variable_data[v]
 end
 
 """
@@ -124,7 +131,7 @@ end
 Get data associated with factor node v.
 """
 function get_factor_data(g::BipartiteFactorGraph{TVar, TFac}, v::Int) where {TVar, TFac}
-    return g.factor_data[v]::TFac
+    return g.factor_data[v]
 end
 
 """
@@ -135,13 +142,8 @@ Since the graph is undirected, the order of `v1` and `v2` doesn't matter.
 """
 function get_edge_data(g::BipartiteFactorGraph{TVar, TFac, E}, v1::Int, v2::Int) where {TVar, TFac, E}
     # Try both orderings since we're dealing with an undirected graph
-    if haskey(g.edge_data, (v1, v2))
-        return g.edge_data[(v1, v2)]::E
-    elseif haskey(g.edge_data, (v2, v1))
-        return g.edge_data[(v2, v1)]::E
-    else
-        throw(KeyError("Edge ($v1, $v2) not found"))
-    end
+    p = UnorderedPair(v1, v2)
+    return g.edge_data[p]
 end
 
 """

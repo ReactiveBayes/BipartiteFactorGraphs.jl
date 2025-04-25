@@ -23,14 +23,11 @@ outputdir = joinpath(pwd(), "benchmark", "results")
 if !isnothing(branch)
     name = branch
     result = BenchmarkTools.judge(
-        BipartiteFactorGraphs,
-        name;
-        retune = true,
-        judgekwargs = Dict(:time_tolerance => 0.1, :memory_tolerance => 0.05)
+        BipartiteFactorGraphs, name; judgekwargs = Dict(:time_tolerance => 0.1, :memory_tolerance => 0.05)
     )
     export_markdown(joinpath(outputdir, "benchmark_vs_$(name)_result.md"), result)
 else
-    result = PkgBenchmark.benchmarkpkg(BipartiteFactorGraphs; retune = true)
+    result = PkgBenchmark.benchmarkpkg(BipartiteFactorGraphs)
     export_markdown(joinpath(outputdir, "benchmark_$(now()).md"), result)
     export_markdown(joinpath(outputdir, "last.md"), result)
 end
