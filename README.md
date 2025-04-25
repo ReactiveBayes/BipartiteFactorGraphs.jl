@@ -1,9 +1,9 @@
 # PkgName
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://username.github.io/PkgName.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://username.github.io/PkgName.jl/dev/)
-[![Build Status](https://github.com/username/PkgName.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/username/PkgName.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/username/PkgName.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/username/PkgName.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://username.github.io/BipartiteFactorGraphs.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://username.github.io/BipartiteFactorGraphs.jl/dev/)
+[![Build Status](https://github.com/ReactiveBayes/BipartiteFactorGraphs.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ReactiveBayes/BipartiteFactorGraphs.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Coverage](https://codecov.io/gh/ReactiveBayes/BipartiteFactorGraphs.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/ReactiveBayes/BipartiteFactorGraphs.jl)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 ## About

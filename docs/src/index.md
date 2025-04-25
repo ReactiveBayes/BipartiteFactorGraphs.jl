@@ -1,10 +1,10 @@
 ```@meta
-CurrentModule = PkgName
+CurrentModule = BipartiteFactorGraphs
 ```
 
-# PkgName
+# BipartiteFactorGraphs
 
-Documentation for [PkgName](https://github.com/username/PkgName.jl).
+Documentation for [BipartiteFactorGraphs](https://github.com/username/BipartiteFactorGraphs.jl).
 
 
 ```@index

@@ -1,4 +1,4 @@
-using PkgName
+using BipartiteFactorGraphs
 using BenchmarkTools
 
 SUITE = BenchmarkGroup()

@@ -1,6 +1,6 @@
-name = "PkgName"
-uuid = "69a11d22-7c62-4348-b0c8-57c08a1b1a46"
-authors = ["PLACEHOLDERNAME_CHANGE_PROJECT_TOML_LINE_3"]
+name = "BipartiteFactorGraphs"
+uuid = "b30351d1-6332-4c89-82f4-633fdf76981a"
+authors = ["ReactiveBayes"]
 version = "1.0.0-DEV"
 
 [compat]
