@@ -29,6 +29,14 @@ export BipartiteFactorGraph,
     outdegree,
     density
 
+struct UnorderedPair{T}
+    a::T
+    b::T
+end
+
+Base.hash(p::UnorderedPair) = hash(p.a) + hash(p.b)
+Base.:(==)(p1::UnorderedPair, p2::UnorderedPair) = (p1.a == p2.a && p1.b == p2.b) || (p1.a == p2.b && p1.b == p2.a)
+
 """
     BipartiteFactorGraph{TVar,TFac,E,DVars<:AbstractDict{Int,TVar},DFacs<:AbstractDict{Int,TFac},DE<:AbstractDict{Tuple{Int,Int},E}}
 
@@ -42,7 +50,12 @@ Users are responsible for maintaining the bipartite structure.
 - `edge_data::DE`: Data for edges between variables and factors
 """
 struct BipartiteFactorGraph{
-    TVar, TFac, E, DVars <: AbstractDict{Int, TVar}, DFacs <: AbstractDict{Int, TFac}, DE <: AbstractDict{UInt64, E}
+    TVar,
+    TFac,
+    E,
+    DVars <: AbstractDict{Int, TVar},
+    DFacs <: AbstractDict{Int, TFac},
+    DE <: AbstractDict{UnorderedPair, E}
 }
     graph::SimpleGraph{Int}
     variable_data::DVars
@@ -57,8 +70,8 @@ Construct an empty BipartiteFactorGraph with specified variable, factor and edge
 Optionally specify a dictionary type (defaults to Base.Dict).
 """
 function BipartiteFactorGraph{TVar, TFac, E}(dict_type = Dict) where {TVar, TFac, E}
-    return BipartiteFactorGraph{TVar, TFac, E, dict_type{Int, TVar}, dict_type{Int, TFac}, dict_type{UInt64, E}}(
-        SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{UInt64, E}()
+    return BipartiteFactorGraph{TVar, TFac, E, dict_type{Int, TVar}, dict_type{Int, TFac}, dict_type{UnorderedPair, E}}(
+        SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{UnorderedPair, E}()
     )
 end
 
@@ -96,8 +109,8 @@ in either order using get_edge_data.
 """
 function add_edge!(g::BipartiteFactorGraph{TVar, TFac, E}, var::Int, fac::Int, data::E) where {TVar, TFac, E}
     if Graphs.add_edge!(g.graph, var, fac)
-        h = hash(var) + hash(fac)
-        g.edge_data[h] = data
+        p = UnorderedPair(var, fac)
+        g.edge_data[p] = data
         return true
     end
     return false
@@ -129,8 +142,8 @@ Since the graph is undirected, the order of `v1` and `v2` doesn't matter.
 """
 function get_edge_data(g::BipartiteFactorGraph{TVar, TFac, E}, v1::Int, v2::Int) where {TVar, TFac, E}
     # Try both orderings since we're dealing with an undirected graph
-    h = hash(v1) + hash(v2)
-    return g.edge_data[h]
+    p = UnorderedPair(v1, v2)
+    return g.edge_data[p]
 end
 
 """
