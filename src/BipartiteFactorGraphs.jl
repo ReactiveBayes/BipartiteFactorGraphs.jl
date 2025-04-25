@@ -57,10 +57,8 @@ Construct an empty BipartiteFactorGraph with specified variable, factor and edge
 Optionally specify a dictionary type (defaults to Base.Dict).
 """
 function BipartiteFactorGraph{TVar, TFac, E}(dict_type = Dict) where {TVar, TFac, E}
-    return BipartiteFactorGraph{
-        TVar, TFac, E, dict_type{Int, TVar}, dict_type{Int, TFac}, dict_type{Tuple{Int, Int}, E}
-    }(
-        SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{Tuple{Int, Int}, E}()
+    return BipartiteFactorGraph{TVar, TFac, E, dict_type{Int, TVar}, dict_type{Int, TFac}, dict_type{UInt64, E}}(
+        SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{UInt64, E}()
     )
 end
 
