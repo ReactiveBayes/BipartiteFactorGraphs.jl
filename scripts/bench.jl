@@ -27,7 +27,7 @@ if !isnothing(branch)
     )
     export_markdown(joinpath(outputdir, "benchmark_vs_$(name)_result.md"), result)
 else
-    result = PkgBenchmark.benchmarkpkg(BipartiteFactorGraphs; retune = true)
+    result = PkgBenchmark.benchmarkpkg(BipartiteFactorGraphs)
     export_markdown(joinpath(outputdir, "benchmark_$(now()).md"), result)
     export_markdown(joinpath(outputdir, "last.md"), result)
 end
