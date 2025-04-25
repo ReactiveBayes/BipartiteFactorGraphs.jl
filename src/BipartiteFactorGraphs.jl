@@ -42,12 +42,7 @@ Users are responsible for maintaining the bipartite structure.
 - `edge_data::DE`: Data for edges between variables and factors
 """
 struct BipartiteFactorGraph{
-    TVar,
-    TFac,
-    E,
-    DVars <: AbstractDict{Int, TVar},
-    DFacs <: AbstractDict{Int, TFac},
-    DE <: AbstractDict{Tuple{Int, Int}, E}
+    TVar, TFac, E, DVars <: AbstractDict{Int, TVar}, DFacs <: AbstractDict{Int, TFac}, DE <: AbstractDict{UInt64, E}
 }
     graph::SimpleGraph{Int}
     variable_data::DVars
@@ -103,7 +98,8 @@ in either order using get_edge_data.
 """
 function add_edge!(g::BipartiteFactorGraph{TVar, TFac, E}, var::Int, fac::Int, data::E) where {TVar, TFac, E}
     if Graphs.add_edge!(g.graph, var, fac)
-        g.edge_data[(var, fac)] = data
+        h = hash(var) + hash(fac)
+        g.edge_data[h] = data
         return true
     end
     return false
@@ -115,7 +111,7 @@ end
 Get data associated with variable node v.
 """
 function get_variable_data(g::BipartiteFactorGraph{TVar}, v::Int) where {TVar}
-    return g.variable_data[v]::TVar
+    return g.variable_data[v]
 end
 
 """
@@ -124,7 +120,7 @@ end
 Get data associated with factor node v.
 """
 function get_factor_data(g::BipartiteFactorGraph{TVar, TFac}, v::Int) where {TVar, TFac}
-    return g.factor_data[v]::TFac
+    return g.factor_data[v]
 end
 
 """
@@ -135,13 +131,8 @@ Since the graph is undirected, the order of `v1` and `v2` doesn't matter.
 """
 function get_edge_data(g::BipartiteFactorGraph{TVar, TFac, E}, v1::Int, v2::Int) where {TVar, TFac, E}
     # Try both orderings since we're dealing with an undirected graph
-    if haskey(g.edge_data, (v1, v2))
-        return g.edge_data[(v1, v2)]::E
-    elseif haskey(g.edge_data, (v2, v1))
-        return g.edge_data[(v2, v1)]::E
-    else
-        throw(KeyError("Edge ($v1, $v2) not found"))
-    end
+    h = hash(v1) + hash(v2)
+    return g.edge_data[h]
 end
 
 """
