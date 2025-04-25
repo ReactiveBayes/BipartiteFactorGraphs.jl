@@ -43,6 +43,9 @@ Base.:(==)(p1::UnorderedPair, p2::UnorderedPair) = (p1.a == p2.a && p1.b == p2.b
 A type-stable bipartite factor graph implementation that stores data for variables, factors, and edges.
 Users are responsible for maintaining the bipartite structure.
 
+After the graph is constructed, the user can use `Graphs.is_bipartite(graph.graph)` to check if the graph is actually bipartite.
+Certain functions may work incorrectly and produce unexpected results if the underlying graph is not bipartite.
+
 # Fields
 - `graph::SimpleGraph{Int}`: The underlying graph structure
 - `variable_data::DVars`: Data for variable nodes
@@ -192,12 +195,14 @@ factors(g::BipartiteFactorGraph) = keys(g.factor_data)
 
 Get all variable neighbors of factor node v.
 Returns only neighbors that are variable nodes.
+Note that this is equivalent to `neighbors(g, v)` with extra check that the node is a factor.
+Use `neighbors(g, v)` for a version that does not check the node type.
 """
 function variable_neighbors(g::BipartiteFactorGraph, v::Int)
     if !is_factor(g, v)
         throw(ArgumentError("Node $v is not a factor node"))
     end
-    return filter(n -> is_variable(g, n), neighbors(g, v))
+    return neighbors(g, v)
 end
 
 """
@@ -205,12 +210,14 @@ end
 
 Get all factor neighbors of variable node v.
 Returns only neighbors that are factor nodes.
+Note that this is equivalent to `neighbors(g, v)` with extra check that the node is a variable.
+Use `neighbors(g, v)` for a version that does not check the node type.
 """
 function factor_neighbors(g::BipartiteFactorGraph, v::Int)
     if !is_variable(g, v)
         throw(ArgumentError("Node $v is not a variable node"))
     end
-    return filter(n -> is_factor(g, n), neighbors(g, v))
+    return neighbors(g, v)
 end
 
 """

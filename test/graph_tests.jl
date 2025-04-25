@@ -119,9 +119,16 @@ end
     @test Set(variable_neighbors(g, f1)) == Set([v1, v2])
     @test Set(variable_neighbors(g, f2)) == Set([v2, v3])
 
+    @test neighbors(g, f1) == variable_neighbors(g, f1)
+    @test neighbors(g, f2) == variable_neighbors(g, f2)
+
     @test Set(factor_neighbors(g, v1)) == Set([f1])
     @test Set(factor_neighbors(g, v2)) == Set([f1, f2])
     @test Set(factor_neighbors(g, v3)) == Set([f2])
+
+    @test neighbors(g, v1) == factor_neighbors(g, v1)
+    @test neighbors(g, v2) == factor_neighbors(g, v2)
+    @test neighbors(g, v3) == factor_neighbors(g, v3)
 
     # Test isolated nodes
     v4 = add_variable!(g, 4.0)
@@ -246,6 +253,8 @@ end
         add_edge!(g, v, f_center, true)
     end
 
+    @test neighbors(g, f_center) == variable_neighbors(g, f_center)
+
     # Test connectivity
     @test length(variable_neighbors(g, f_center)) == 5
     for v in variables
@@ -260,6 +269,8 @@ end
     for f in factors
         add_edge!(g, v_center, f, false)
     end
+
+    @test neighbors(g, v_center) == factor_neighbors(g, v_center)
 
     # Test connectivity
     @test length(factor_neighbors(g, v_center)) == 5
@@ -294,10 +305,18 @@ end
     @test Set(variable_neighbors(g, f1)) == Set([v1, v2])
     @test Set(variable_neighbors(g, f2)) == Set([v3, v4])
 
+    @test neighbors(g, f1) == variable_neighbors(g, f1)
+    @test neighbors(g, f2) == variable_neighbors(g, f2)
+
     @test Set(factor_neighbors(g, v1)) == Set([f1])
     @test Set(factor_neighbors(g, v2)) == Set([f1])
     @test Set(factor_neighbors(g, v3)) == Set([f2])
     @test Set(factor_neighbors(g, v4)) == Set([f2])
+
+    @test neighbors(g, v1) == factor_neighbors(g, v1)
+    @test neighbors(g, v2) == factor_neighbors(g, v2)
+    @test neighbors(g, v3) == factor_neighbors(g, v3)
+    @test neighbors(g, v4) == factor_neighbors(g, v4)
 
     # No connection between components
     @test !has_edge(g, v1, f2)
