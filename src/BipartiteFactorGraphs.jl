@@ -1,7 +1,8 @@
 module BipartiteFactorGraphs
 
 using Graphs
-import Graphs: add_edge!, has_edge, edges, neighbors, nv, ne, all_neighbors, degree, indegree, outdegree, density, is_bipartite
+import Graphs:
+    add_edge!, has_edge, edges, neighbors, nv, ne, all_neighbors, degree, indegree, outdegree, density, is_bipartite
 
 export BipartiteFactorGraph,
     add_variable!,
@@ -108,10 +109,17 @@ function BipartiteFactorGraph()
 end
 
 function BipartiteFactorGraph(::Type{TVar}, ::Type{TFac}, ::Type{E}, dict_type::Type{D} = Dict) where {TVar, TFac, E, D}
-    return BipartiteFactorGraph{TVar, TFac, E, D{Int, TVar}, D{Int, TFac}, D{UnorderedPair, E}}(
-        SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{UnorderedPair, E}()
+    VariableDictType = make_dict_type(dict_type, Int, TVar)
+    FactorDictType = make_dict_type(dict_type, Int, TFac)
+    EdgeDictType = make_dict_type(dict_type, UnorderedPair, E)
+    return BipartiteFactorGraph{TVar, TFac, E, VariableDictType, FactorDictType, EdgeDictType}(
+        SimpleGraph{Int}(), VariableDictType(), FactorDictType(), EdgeDictType()
     )
 end
+
+make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D <: AbstractDict, K, V} = D{K, V}
+make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D, K, V} =
+    throw(ArgumentError("Unsupported dictionary type: $D. Must be a subtype of AbstractDict."))
 
 function Base.show(io::IO, g::BipartiteFactorGraph{TVar, TFac, E}) where {TVar, TFac, E}
     n_variables = length(g.variable_data)
@@ -288,7 +296,6 @@ Check if there is an edge between variable node `var` and factor node `fac`.
 function has_edge(g::BipartiteFactorGraph, var::Int, fac::Int)
     return Graphs.has_edge(g.graph, var, fac)
 end
-
 
 """
     edges(g::BipartiteFactorGraph)

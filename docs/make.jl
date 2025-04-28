@@ -12,7 +12,8 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
-        "Usage Guide" => "usage.md",
+        "Basic Usage" => "usage-basic.md",
+        "Advanced Usage" => "usage-advanced.md",
         "API Reference" => "api.md",
         "Performance Benchmarks" => "benchmarks.md"
     ]

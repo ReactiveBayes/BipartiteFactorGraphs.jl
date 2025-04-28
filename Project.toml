@@ -6,6 +6,12 @@ version = "1.0.0"
 [deps]
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 
+[weakdeps]
+Dictionaries = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
+
+[extensions]
+DictionariesExt = "Dictionaries"
+
 [compat]
 Aqua = "0.8"
 Dictionaries = "0.4.5"
