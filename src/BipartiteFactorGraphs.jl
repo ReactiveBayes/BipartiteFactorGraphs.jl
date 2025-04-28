@@ -1,7 +1,7 @@
 module BipartiteFactorGraphs
 
 using Graphs
-import Graphs: add_edge!, has_edge, neighbors, nv, ne, all_neighbors, degree, indegree, outdegree, density
+import Graphs: add_edge!, has_edge, edges, neighbors, nv, ne, all_neighbors, degree, indegree, outdegree, density, is_bipartite
 
 export BipartiteFactorGraph,
     add_variable!,
@@ -20,6 +20,7 @@ export BipartiteFactorGraph,
     # Reexport used Graphs functions
     add_edge!,
     has_edge,
+    edges,
     neighbors,
     nv,
     ne,
@@ -27,7 +28,8 @@ export BipartiteFactorGraph,
     degree,
     indegree,
     outdegree,
-    density
+    density,
+    is_bipartite
 
 struct UnorderedPair{T}
     a::T
@@ -40,17 +42,22 @@ Base.:(==)(p1::UnorderedPair, p2::UnorderedPair) = (p1.a == p2.a && p1.b == p2.b
 """
     BipartiteFactorGraph
 
-A type-stable bipartite factor graph implementation that stores data for variables, factors, and edges.
+A type-stable bipartite undirected factor graph implementation that stores data for variables, factors, and edges.
 Users are responsible for maintaining the bipartite structure.
 
 After the graph is constructed, the user can use `Graphs.is_bipartite(graph.graph)` to check if the graph is actually bipartite.
 Certain functions may work incorrectly and produce unexpected results if the underlying graph is not bipartite.
 
 # Fields
-- `graph::SimpleGraph{Int}`: The underlying graph structure
-- `variable_data::TVar`: Data for variable nodes
-- `factor_data::TFac`: Data for factor nodes
-- `edge_data::E`: Data for edges between variables and factors
+- `graph`: The underlying graph structure
+- `variable_data`: A dictionary of data for variable nodes where the keys are elements of type `Int` and the values are of type `TVar`
+- `factor_data`: A dictionary of data for factor nodes where the keys are elements of type `Int` and the values are of type `TFac`
+- `edge_data`: A dictionary of data for edges between variables and factors where the keys are elements of type `UnorderedPair` and the values are of type `E`
+
+!!! note
+    Edge data keys are stored as `UnorderedPair`s to avoid duplicate entries or access errors. 
+    This means that `get_edge_data(g, v1, v2)` is equivalent to `get_edge_data(g, v2, v1)`.
+    This also implies that the graph is undirected.
 
 To construct an empty BipartiteFactorGraph with specified variable, factor and edge data types use the following constructor:
 
@@ -114,6 +121,8 @@ function Base.show(io::IO, g::BipartiteFactorGraph{TVar, TFac, E}) where {TVar, 
     print(io, "BipartiteFactorGraph{$TVar, $TFac, $E} with ")
     print(io, "$n_variables variables, $n_factors factors, and $n_edges edges")
 end
+
+Base.broadcastable(g::BipartiteFactorGraph) = Ref(g)
 
 """
     add_variable!(g::BipartiteFactorGraph{TVar}, data::TVar) where {TVar}
@@ -280,6 +289,18 @@ function has_edge(g::BipartiteFactorGraph, var::Int, fac::Int)
     return Graphs.has_edge(g.graph, var, fac)
 end
 
+
+"""
+    edges(g::BipartiteFactorGraph)
+
+Get all edges in the graph. 
+
+!!! note 
+    This function behaves differently from `variables` and `factors` in that it calls `Graphs.edges`. 
+    The closest equivalent for nodes is the `neighbors` function.
+"""
+edges(g::BipartiteFactorGraph) = Graphs.edges(g.graph)
+
 # Additional functions from Graphs.jl API
 
 """
@@ -365,6 +386,15 @@ function density(g::BipartiteFactorGraph)
         return 0.0
     end
     return Graphs.ne(g.graph) / (num_variables(g) * num_factors(g))
+end
+
+"""
+    is_bipartite(g::BipartiteFactorGraph)
+
+Check if the graph is bipartite.
+"""
+function is_bipartite(g::BipartiteFactorGraph)
+    return Graphs.is_bipartite(g.graph)
 end
 
 end # module

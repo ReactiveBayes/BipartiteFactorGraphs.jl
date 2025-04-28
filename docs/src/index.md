@@ -29,10 +29,17 @@ This structure is particularly useful for probabilistic graphical models, Bayesi
 using Pkg
 Pkg.add("BipartiteFactorGraphs")
 ```
+or via the Julia REPL:
+
+```julia
+] add BipartiteFactorGraphs
+```
 
 ## Quick Start
 
-```julia
+Here's a simple example demonstrating how to create and work with a bipartite factor graph:
+
+```@example quickstart
 using BipartiteFactorGraphs
 
 # Create a graph with Float64 variable data, String factor data, and Int edge data
@@ -60,7 +67,7 @@ println("Neighbors of factor f1: ", variable_neighbors(g, f1))
 println("Edge data between v2 and f1: ", get_edge_data(g, v2, f1))
 ```
 
-## Manual Outline
+## Where to go next?
 
 ```@contents
 Pages = [

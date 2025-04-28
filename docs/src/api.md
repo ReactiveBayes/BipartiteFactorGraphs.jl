@@ -53,10 +53,12 @@ Functions that compute properties of the graph:
 nv
 ne
 has_edge
+edges
 neighbors
 all_neighbors
 degree
 indegree
 outdegree
 density
+is_bipartite
 ``` 

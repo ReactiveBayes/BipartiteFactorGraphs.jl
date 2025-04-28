@@ -17,10 +17,14 @@
     f1 = add_factor!(g, "factor1")
     f2 = add_factor!(g, "factor2")
 
+    @test length(edges(g)) == 0
+
     add_edge!(g, v1, f1, true)
     add_edge!(g, v2, f1, true)
     add_edge!(g, v2, f2, false)
     add_edge!(g, v3, f2, true)
+
+    @test length(edges(g)) == 4
 
     # Test graph properties
     @test Graphs.nv(g) == 5  # 3 variables + 2 factors
@@ -58,6 +62,8 @@
         add_factor!(h, "factor$i")
     end
 
+    @test length(edges(h)) == 0
+
     # Add 20 edges
     for i in 1:10
         # Connect each variable to 2 random factors
@@ -67,6 +73,8 @@
         add_edge!(h, i, 10 + f_idx1, true)
         add_edge!(h, i, 10 + f_idx2, false)
     end
+
+    @test length(edges(h)) == 20
 
     # Test properties
     @test Graphs.nv(h) == 15  # 10 variables + 5 factors
@@ -123,6 +131,7 @@ end
     @test Graphs.nv(g3) == 5
     @test Graphs.ne(g3) == 6  # 3 variables * 2 factors
     @test Graphs.density(g3) == 1.0  # All possible edges exist
+    @test length(edges(g3)) == 6
 
     # Check degrees in fully connected graph
     for v in 1:3
