@@ -180,10 +180,12 @@ for dict_type in DICT_TYPES
                         edges_added += 1
                     end
                 end
-            end setup = (g = setup_graph_with_vars_and_factors($nvars, $nfacts, $dict_type_type);
-            nvars = $nvars;
-            nfacts = $nfacts;
-            total_edges = $total_edges)
+            end setup = (
+                g = setup_graph_with_vars_and_factors($nvars, $nfacts, $dict_type_type);
+                nvars = $nvars;
+                nfacts = $nfacts;
+                total_edges = $total_edges
+            )
         end
     end
 end
@@ -218,16 +220,20 @@ for dict_type in DICT_TYPES
                 for f in factors_sample
                     variable_neighbors(g, f)
                 end
-            end setup = (g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
-            factors_sample = get_random_nodes(g, 100, :factor))
+            end setup = (
+                g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
+                factors_sample = get_random_nodes(g, 100, :factor)
+            )
 
             # Iterate over all factor neighbors for a random variable
             SUITE["iteration"][dict_type_name]["fac_neighbors_$(size_name)_$(density_name)"] = @benchmarkable begin
                 for v in vars_sample
                     factor_neighbors(g, v)
                 end
-            end setup = (g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
-            vars_sample = get_random_nodes(g, 100, :variable))
+            end setup = (
+                g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
+                vars_sample = get_random_nodes(g, 100, :variable)
+            )
         end
     end
 end
@@ -252,16 +258,20 @@ for dict_type in DICT_TYPES
                 for v in vars_sample
                     get_variable_data(g, v)
                 end
-            end setup = (g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
-            vars_sample = get_random_nodes(g, 1000, :variable))
+            end setup = (
+                g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
+                vars_sample = get_random_nodes(g, 1000, :variable)
+            )
 
             # Random access to factor data
             SUITE["random_access"][dict_type_name]["fac_data_$(size_name)_$(density_name)"] = @benchmarkable begin
                 for f in facts_sample
                     get_factor_data(g, f)
                 end
-            end setup = (g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
-            facts_sample = get_random_nodes(g, 1000, :factor))
+            end setup = (
+                g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
+                facts_sample = get_random_nodes(g, 1000, :factor)
+            )
 
             # Random access to edge data
             SUITE["random_access"][dict_type_name]["edge_data_$(size_name)_$(density_name)"] = @benchmarkable begin
@@ -272,8 +282,10 @@ for dict_type in DICT_TYPES
                         get_edge_data(g, v, f)
                     end
                 end
-            end setup = (g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
-            vars_sample = get_random_nodes(g, 1000, :variable))
+            end setup = (
+                g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
+                vars_sample = get_random_nodes(g, 1000, :variable)
+            )
         end
     end
 end
@@ -346,9 +358,11 @@ for dict_type in DICT_TYPES
                         has_edge(g, v, f)
                     end
                 end
-            end setup = (g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
-            vars_sample = get_random_nodes(g, 10, :variable);
-            facts_sample = get_random_nodes(g, 10, :factor)) evals = 1
+            end setup = (
+                g = create_test_graph($nvars, $nfacts, $avg_edges, $dict_type_type);
+                vars_sample = get_random_nodes(g, 10, :variable);
+                facts_sample = get_random_nodes(g, 10, :factor)
+            ) evals = 1
 
             # Check node types - use separate setup expressions to avoid variable conflicts
             SUITE["queries"][dict_type_name]["is_variable_$(size_name)_$(density_name)"] = @benchmarkable begin

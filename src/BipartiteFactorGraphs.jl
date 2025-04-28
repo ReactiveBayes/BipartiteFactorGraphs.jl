@@ -118,8 +118,9 @@ function BipartiteFactorGraph(::Type{TVar}, ::Type{TFac}, ::Type{E}, dict_type::
 end
 
 make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D <: AbstractDict, K, V} = D{K, V}
-make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D, K, V} =
-    throw(ArgumentError("Unsupported dictionary type: $D. Must be a subtype of AbstractDict."))
+make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D, K, V} = throw(
+    ArgumentError("Unsupported dictionary type: $D. Must be a subtype of AbstractDict.")
+)
 
 function Base.show(io::IO, g::BipartiteFactorGraph{TVar, TFac, E}) where {TVar, TFac, E}
     n_variables = length(g.variable_data)

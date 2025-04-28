@@ -357,7 +357,7 @@ end
     using BipartiteFactorGraphs
 
     g = BipartiteFactorGraph(Float64, String, Bool)
-    
+
     v1 = add_variable!(g, 1.0)
     v2 = add_variable!(g, 2.0)
     v3 = add_variable!(g, 3.0)
@@ -376,5 +376,4 @@ end
     # `map` is not defined on the `Dictionaries` so we use `Iterators.map`
     @test get_variable_data.(g, variables(g)) == collect(Iterators.map(v -> get_variable_data(g, v), variables(g)))
     @test get_factor_data.(g, factors(g)) == collect(Iterators.map(f -> get_factor_data(g, f), factors(g)))
-    
 end

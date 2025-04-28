@@ -52,6 +52,8 @@ Base.values(d::DictionariesJLWrapper) = values(d.dict)
 Base.show(io::IO, d::DictionariesJLWrapper) = show(io, d.dict)
 Base.show(io::IO, ::MIME"text/plain", d::DictionariesJLWrapper) = show(io, MIME"text/plain"(), d.dict)
 
-BipartiteFactorGraphs.make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D <: Dictionaries.AbstractDictionary, K, V} = DictionariesJLWrapper{K, V, D{K, V}}
+BipartiteFactorGraphs.make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D <: Dictionaries.AbstractDictionary, K, V} = DictionariesJLWrapper{
+    K, V, D{K, V}
+}
 
 end # module DictionariesExt
