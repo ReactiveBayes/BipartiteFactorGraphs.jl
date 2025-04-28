@@ -2,20 +2,48 @@
     using BipartiteFactorGraphs
 
     # Test basic construction
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
     @test num_variables(g) == 0
     @test num_factors(g) == 0
 
     # Test construction with specified dictionary type
-    g2 = BipartiteFactorGraph{Int, String, Float64}(Dict)
+    g2 = BipartiteFactorGraph(Int, String, Float64, Dict)
     @test num_variables(g2) == 0
     @test num_factors(g2) == 0
+
+    # Test construction with no types
+    g3 = BipartiteFactorGraph()
+    @test num_variables(g3) == 0
+    @test num_factors(g3) == 0
+end
+
+@testitem "Show method of the BipartiteFactorGraph" begin
+    using BipartiteFactorGraphs
+
+    g = BipartiteFactorGraph(Float64, String, Bool)
+    @test repr(g) == "BipartiteFactorGraph{Float64, String, Bool} with 0 variables, 0 factors, and 0 edges"
+
+    v1 = add_variable!(g, 1.0)
+    f1 = add_factor!(g, "factor1")
+    add_edge!(g, v1, f1, true)
+
+    @test repr(g) == "BipartiteFactorGraph{Float64, String, Bool} with 1 variables, 1 factors, and 1 edges"
+
+    v2 = add_variable!(g, 2.0)
+    f2 = add_factor!(g, "factor2")
+    add_edge!(g, v2, f2, false)
+
+    @test repr(g) == "BipartiteFactorGraph{Float64, String, Bool} with 2 variables, 2 factors, and 2 edges"
+
+    add_edge!(g, v2, f1, true)
+
+    @test repr(g) == "BipartiteFactorGraph{Float64, String, Bool} with 2 variables, 2 factors, and 3 edges"
 end
 
 @testitem "Adding variables and factors" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Add variables
     v1 = add_variable!(g, 1.0)
@@ -53,7 +81,7 @@ end
 @testitem "Adding edges" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Add nodes
     v1 = add_variable!(g, 1.0)
@@ -92,7 +120,7 @@ end
 @testitem "Neighbors" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Create a simple factor graph
     v1 = add_variable!(g, 1.0)
@@ -142,7 +170,7 @@ end
 @testitem "Collections" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Add nodes
     v1 = add_variable!(g, 1.0)
@@ -155,7 +183,7 @@ end
     @test Set(factors(g)) == Set([f1, f2])
 
     # Test collections with empty graph
-    g_empty = BipartiteFactorGraph{Float64, String, Bool}()
+    g_empty = BipartiteFactorGraph(Float64, String, Bool)
     @test isempty(variables(g_empty))
     @test isempty(factors(g_empty))
 
@@ -169,7 +197,7 @@ end
 @testitem "Type stability" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Add nodes
     v = add_variable!(g, 1.0)
@@ -197,7 +225,7 @@ end
 @testitem "Undirected edge access" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Add nodes
     v1 = add_variable!(g, 1.0)
@@ -243,7 +271,7 @@ end
 @testitem "Complex graph structures" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Create star-like structure: one factor connected to multiple variables
     f_center = add_factor!(g, "center")
@@ -283,7 +311,7 @@ end
 @testitem "Disconnected components" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Create first component
     v1 = add_variable!(g, 1.0)

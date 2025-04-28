@@ -2,7 +2,7 @@
     using BipartiteFactorGraphs
 
     # Test with Base.Dict (default)
-    g = BipartiteFactorGraph{Float64, String, Bool}(Dict)
+    g = BipartiteFactorGraph(Float64, String, Bool, Dict)
 
     v1 = add_variable!(g, 1.0)
     f1 = add_factor!(g, "factor1")

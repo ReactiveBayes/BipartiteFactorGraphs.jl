@@ -20,7 +20,7 @@ const EDGE_DENSITIES = [
 
 # Helper functions for benchmarking
 function create_test_graph(nvars::Int, nfacts::Int, avg_edges_per_node::Int)
-    g = BipartiteFactorGraph{Float64, String, Int}()
+    g = BipartiteFactorGraph(Float64, String, Int)
 
     # Add variables and factors
     for i in 1:nvars
@@ -62,11 +62,11 @@ end
 
 # Setup functions to avoid scope issues
 function setup_empty_graph()
-    return BipartiteFactorGraph{Float64, String, Int}()
+    return BipartiteFactorGraph(Float64, String, Int)
 end
 
 function setup_graph_with_vars(nvars)
-    g = BipartiteFactorGraph{Float64, String, Int}()
+    g = BipartiteFactorGraph(Float64, String, Int)
     for i in 1:nvars
         add_variable!(g, float(i))
     end
@@ -74,7 +74,7 @@ function setup_graph_with_vars(nvars)
 end
 
 function setup_graph_with_factors(nfacts)
-    g = BipartiteFactorGraph{Float64, String, Int}()
+    g = BipartiteFactorGraph(Float64, String, Int)
     for i in 1:nfacts
         add_factor!(g, "factor_$i")
     end
@@ -82,7 +82,7 @@ function setup_graph_with_factors(nfacts)
 end
 
 function setup_graph_with_vars_and_factors(nvars, nfacts)
-    g = BipartiteFactorGraph{Float64, String, Int}()
+    g = BipartiteFactorGraph(Float64, String, Int)
     for i in 1:nvars
         add_variable!(g, float(i))
     end
@@ -100,7 +100,7 @@ for size in GRAPH_SIZES
     nvars, nfacts = size.vars, size.facts
 
     # Graph creation
-    SUITE["creation"]["empty_$size_name"] = @benchmarkable BipartiteFactorGraph{Float64, String, Int}()
+    SUITE["creation"]["empty_$size_name"] = @benchmarkable BipartiteFactorGraph(Float64, String, Int)
 
     # Adding single variable/factor
     SUITE["creation"]["add_variable_$size_name"] = @benchmarkable add_variable!(g, 1.0) setup = (

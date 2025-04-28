@@ -36,7 +36,7 @@ Pkg.add("BipartiteFactorGraphs")
 using BipartiteFactorGraphs
 
 # Create a graph with Float64 variable data, String factor data, and Int edge data
-g = BipartiteFactorGraph{Float64, String, Int}()
+g = BipartiteFactorGraph(Float64, String, Int)
 
 # Add variables
 v1 = add_variable!(g, 1.0)

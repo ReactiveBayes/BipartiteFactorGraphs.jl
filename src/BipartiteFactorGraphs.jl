@@ -38,7 +38,7 @@ Base.hash(p::UnorderedPair) = hash(p.a) + hash(p.b)
 Base.:(==)(p1::UnorderedPair, p2::UnorderedPair) = (p1.a == p2.a && p1.b == p2.b) || (p1.a == p2.b && p1.b == p2.a)
 
 """
-    BipartiteFactorGraph{TVar,TFac,E,DVars<:AbstractDict{Int,TVar},DFacs<:AbstractDict{Int,TFac},DE<:AbstractDict{Tuple{Int,Int},E}}
+    BipartiteFactorGraph
 
 A type-stable bipartite factor graph implementation that stores data for variables, factors, and edges.
 Users are responsible for maintaining the bipartite structure.
@@ -48,9 +48,39 @@ Certain functions may work incorrectly and produce unexpected results if the und
 
 # Fields
 - `graph::SimpleGraph{Int}`: The underlying graph structure
-- `variable_data::DVars`: Data for variable nodes
-- `factor_data::DFacs`: Data for factor nodes
-- `edge_data::DE`: Data for edges between variables and factors
+- `variable_data::TVar`: Data for variable nodes
+- `factor_data::TFac`: Data for factor nodes
+- `edge_data::E`: Data for edges between variables and factors
+
+To construct an empty BipartiteFactorGraph with specified variable, factor and edge data types use the following constructor:
+
+```julia
+BipartiteFactorGraph(::Type{TVar}, ::Type{TFac}, ::Type{E}, dict_type::Type{D}=Dict) where {TVar,TFac,E,D}
+```
+
+# Arguments
+- `TVar`: The type of the variable data
+- `TFac`: The type of the factor data
+- `E`: The type of the edge data
+- `dict_type`: The type of the dictionary used to store the variable, factor and edge data (defaults to Base.Dict)
+
+As an alternative to the constructor, you can use `BipartiteFactorGraph()` as an alias to `BipartiteFactorGraph(Any, Any, Any, Dict)`.
+
+# Example
+```jldoctest
+julia> g = BipartiteFactorGraph(Int, Float64, String, Dict)
+BipartiteFactorGraph{Int64, Float64, String} with 0 variables, 0 factors, and 0 edges
+
+julia> add_variable!(g, 1);
+
+julia> add_factor!(g, 2.0);
+
+julia> add_edge!(g, 1, 2, "Hello");
+
+julia> g
+BipartiteFactorGraph{Int64, Float64, String} with 1 variables, 1 factors, and 1 edges
+```
+
 """
 struct BipartiteFactorGraph{
     TVar,
@@ -66,16 +96,23 @@ struct BipartiteFactorGraph{
     edge_data::DE
 end
 
-"""
-    BipartiteFactorGraph{TVar,TFac,E}(dict_type=Dict) where {TVar,TFac,E}
+function BipartiteFactorGraph()
+    return BipartiteFactorGraph(Any, Any, Any, Dict)
+end
 
-Construct an empty BipartiteFactorGraph with specified variable, factor and edge data types.
-Optionally specify a dictionary type (defaults to Base.Dict).
-"""
-function BipartiteFactorGraph{TVar, TFac, E}(dict_type = Dict) where {TVar, TFac, E}
-    return BipartiteFactorGraph{TVar, TFac, E, dict_type{Int, TVar}, dict_type{Int, TFac}, dict_type{UnorderedPair, E}}(
+function BipartiteFactorGraph(::Type{TVar}, ::Type{TFac}, ::Type{E}, dict_type::Type{D} = Dict) where {TVar, TFac, E, D}
+    return BipartiteFactorGraph{TVar, TFac, E, D{Int, TVar}, D{Int, TFac}, D{UnorderedPair, E}}(
         SimpleGraph{Int}(), dict_type{Int, TVar}(), dict_type{Int, TFac}(), dict_type{UnorderedPair, E}()
     )
+end
+
+function Base.show(io::IO, g::BipartiteFactorGraph{TVar, TFac, E}) where {TVar, TFac, E}
+    n_variables = length(g.variable_data)
+    n_factors = length(g.factor_data)
+    n_edges = length(g.edge_data)
+
+    print(io, "BipartiteFactorGraph{$TVar, $TFac, $E} with ")
+    print(io, "$n_variables variables, $n_factors factors, and $n_edges edges")
 end
 
 """
