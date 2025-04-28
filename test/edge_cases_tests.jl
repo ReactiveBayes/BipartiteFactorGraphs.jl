@@ -20,6 +20,9 @@
     # Test accessing node with wrong type
     @test_throws ArgumentError factor_neighbors(g, f1)
     @test_throws ArgumentError variable_neighbors(g, v1)
+
+    @test isempty(neighbors(g, f1))
+    @test isempty(neighbors(g, v1))
 end
 
 @testitem "Edge data error handling" begin

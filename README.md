@@ -7,6 +7,7 @@
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 A Julia package for working with bipartite factor graphs, providing efficient data structures and algorithms for graph-based probabilistic inference.
+The package is built on top of and is fully compatible with the [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) package.
 
 ## Installation
 
