@@ -76,7 +76,7 @@ For large graphs, consider the following performance optimizations:
 
 Here's a simple example of how BipartiteFactorGraphs might be used in a belief propagation algorithm:
 
-```julia
+```@example inference
 using BipartiteFactorGraphs
 using LinearAlgebra
 
@@ -121,4 +121,6 @@ end
 
 # Run one iteration of belief update
 update_beliefs!(g)
+
+nothing #hide
 ``` 
