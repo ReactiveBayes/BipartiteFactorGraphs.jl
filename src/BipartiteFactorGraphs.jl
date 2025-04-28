@@ -38,16 +38,16 @@ Base.hash(p::UnorderedPair) = hash(p.a) + hash(p.b)
 Base.:(==)(p1::UnorderedPair, p2::UnorderedPair) = (p1.a == p2.a && p1.b == p2.b) || (p1.a == p2.b && p1.b == p2.a)
 
 """
-    BipartiteFactorGraph{TVar,TFac,E,DVars<:AbstractDict{Int,TVar},DFacs<:AbstractDict{Int,TFac},DE<:AbstractDict{Tuple{Int,Int},E}}
+    BipartiteFactorGraph
 
 A type-stable bipartite factor graph implementation that stores data for variables, factors, and edges.
 Users are responsible for maintaining the bipartite structure.
 
 # Fields
 - `graph::SimpleGraph{Int}`: The underlying graph structure
-- `variable_data::DVars`: Data for variable nodes
-- `factor_data::DFacs`: Data for factor nodes
-- `edge_data::DE`: Data for edges between variables and factors
+- `variable_data::TVar`: Data for variable nodes
+- `factor_data::TFac`: Data for factor nodes
+- `edge_data::E`: Data for edges between variables and factors
 
 To construct an empty BipartiteFactorGraph with specified variable, factor and edge data types use the following constructor:
 
@@ -103,11 +103,6 @@ function BipartiteFactorGraph(::Type{TVar}, ::Type{TFac}, ::Type{E}, dict_type::
     )
 end
 
-"""
-    Base.show(io::IO, g::BipartiteFactorGraph)
-
-Custom display method for BipartiteFactorGraph that shows the number of variables, factors, and edges.
-"""
 function Base.show(io::IO, g::BipartiteFactorGraph{TVar, TFac, E}) where {TVar, TFac, E}
     n_variables = length(g.variable_data)
     n_factors = length(g.factor_data)
