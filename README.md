@@ -1,3 +1,5 @@
+![BipartiteFactorGraphs.jl](docs/src/assets/logo.png)
+
 # BipartiteFactorGraphs.jl
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://reactiveBayes.github.io/BipartiteFactorGraphs.jl/stable/)
