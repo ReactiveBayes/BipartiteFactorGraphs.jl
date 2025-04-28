@@ -330,3 +330,40 @@ for size in GRAPH_SIZES
         end setup = (g = create_test_graph($nvars, $nfacts, $avg_edges))
     end
 end
+
+# 7. Edge addition with callback
+SUITE["edge_callbacks"] = BenchmarkGroup()
+
+for size in GRAPH_SIZES
+    size_name = size.name
+    nvars, nfacts = size.vars, size.facts
+
+    for density in EDGE_DENSITIES
+        density_name = density.name
+        avg_edges = density.connections
+        total_edges = min(nvars * nfacts, (nvars + nfacts) * avg_edges ÷ 2)
+
+        SUITE["edge_callbacks"]["add_edges_with_callback_$(size_name)_$(density_name)"] = @benchmarkable begin
+            edges_added = 0
+            added_edges = Set{Tuple{Int, Int}}()
+
+            while edges_added < total_edges
+                var = rand(1:nvars)
+                fac = rand((nvars + 1):(nvars + nfacts))
+
+                if (var, fac) ∉ added_edges
+                    push!(added_edges, (var, fac))
+                    add_edge!(g, var, fac, edges_added) do node_id, node_data, edge_data
+                        # Empty callback that does nothing
+                    end
+                    edges_added += 1
+                end
+            end
+        end setup = (
+            g = setup_graph_with_vars_and_factors($nvars, $nfacts);
+            nvars = $nvars;
+            nfacts = $nfacts;
+            total_edges = $total_edges
+        )
+    end
+end

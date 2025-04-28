@@ -140,20 +140,85 @@ function add_factor!(g::BipartiteFactorGraph{TVar, TFac}, data::TFac) where {TVa
 end
 
 """
-    add_edge!(g::BipartiteFactorGraph{TVar,TFac,E}, var::Int, fac::Int, data::E) where {TVar,TFac,E}
+    add_edge!(callback::Function, g::BipartiteFactorGraph{TVar,TFac,E}, var::Int, fac::Int, data::E) where {TVar,TFac,E}
 
 Add an edge between variable node `var` and factor node `fac` with associated data.
+The callback function will be called twice - once for the variable node and once for the factor node.
+The callback function should accept three arguments:
+- `node_id::Int`: The ID of the node being notified
+- `node_data`: The data associated with the node (type TVar for variables, TFac for factors)
+- `edge_data::E`: The data associated with the edge being added
+
 User must ensure that `var` is a variable node and `fac` is a factor node.
 Edge data is stored with the original order of vertices (var, fac), but can be accessed
 in either order using get_edge_data.
+
+# Arguments
+- `callback`: A function that will be called with node ID, node data, and edge data when the edge is added
+- `g`: The bipartite factor graph
+- `var`: The variable node ID
+- `fac`: The factor node ID
+- `data`: The data to associate with the edge
+
+# Returns
+- `true` if the edge was added successfully, `false` if the edge already exists
+
+# Example
+```julia
+add_edge!(g, v1, f1, edge_data) do node_id, node_data, edge_data
+    if is_variable(g, node_id)
+        # Handle variable node
+        println("Variable \$node_id with data \$node_data connected with edge data \$edge_data")
+    else
+        # Handle factor node
+        println("Factor \$node_id with data \$node_data connected with edge data \$edge_data")
+    end
+end
+```
+
+or by using multiple dispatch:
+```julia
+
+# You can also use multiple dispatch to handle different node types
+function callback(node_id::Int, data::TVar, edge_data::Int)
+    println("Variable \$node_id connected with data \$data and edge data \$edge_data")
+end
+
+function callback(node_id::Int, data::TFac, edge_data::Int)
+    println("Factor \$node_id connected with data \$data and edge data \$edge_data")
+end
+
+add_edge!(callback, g, v1, f1, 10)
+```
 """
-function add_edge!(g::BipartiteFactorGraph{TVar, TFac, E}, var::Int, fac::Int, data::E) where {TVar, TFac, E}
+function add_edge!(callback::F, g::BipartiteFactorGraph{TVar, TFac, E}, var::Int, fac::Int, data::E) where {F, TVar, TFac, E}
     if Graphs.add_edge!(g.graph, var, fac)
         p = UnorderedPair(var, fac)
         g.edge_data[p] = data
+        callback(var, get_variable_data(g, var), data)
+        callback(fac, get_factor_data(g, fac), data)
         return true
     end
     return false
+end
+
+"""
+    add_edge!(g::BipartiteFactorGraph{TVar,TFac,E}, var::Int, fac::Int, data::E) where {TVar,TFac,E}
+
+Add an edge between variable node `var` and factor node `fac` with associated data.
+This is a convenience method that uses an empty callback.
+
+# Arguments
+- `g`: The bipartite factor graph
+- `var`: The variable node ID
+- `fac`: The factor node ID
+- `data`: The data to associate with the edge
+
+# Returns
+- `true` if the edge was added successfully, `false` if the edge already exists
+"""
+function add_edge!(g::BipartiteFactorGraph{TVar, TFac, E}, var::Int, fac::Int, data::E) where {TVar, TFac, E}
+    return add_edge!((_, _, _) -> nothing, g, var, fac, data)
 end
 
 """

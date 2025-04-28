@@ -46,7 +46,34 @@ Connect variable and factor nodes with edges containing data:
 add_edge!(g, v1, f1, 10)  # Add edge between variable v1 and factor f1 with data 10
 add_edge!(g, v2, f1, 20)
 add_edge!(g, v2, f2, 30)
+
+# You can also use a callback function to notify nodes when edges are added
+# The callback receives the node ID, node data, and edge data
+add_edge!(g, v1, f1, 10) do node_id, node_data, edge_data
+    if is_variable(g, node_id)
+        # Handle variable node
+        println("Variable $node_id with data $node_data connected with edge data $edge_data")
+    else
+        # Handle factor node
+        println("Factor $node_id with data $node_data connected with edge data $edge_data")
+    end
+end
+
+# You can also use multiple dispatch to handle different node types
+function handle_node_connection(node_id::Int, data::Vector{Float64}, edge_data::Int)
+    println("Vector variable $node_id connected with edge data $edge_data")
+end
+
+function handle_node_connection(node_id::Int, data::String, edge_data::Int)
+    println("String factor $node_id connected with edge data $edge_data")
+end
+
+add_edge!(handle_node_connection, g, v1, f1, 10)
 ```
+
+The callback function is useful when you need to perform additional operations when nodes are connected,
+such as updating internal state or triggering other computations. The callback is called twice for each edge addition:
+once for the variable node and once for the factor node.
 
 ### Querying the Graph
 

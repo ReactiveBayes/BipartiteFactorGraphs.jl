@@ -352,3 +352,47 @@ end
     @test !has_edge(g, v3, f1)
     @test !has_edge(g, v4, f1)
 end
+
+@testitem "Adding edges with callback function" begin
+    using BipartiteFactorGraphs
+
+    g = BipartiteFactorGraph(Vector{Int}, Vector{Int}, Bool)
+
+    # Add nodes
+    v1 = add_variable!(g, [1])
+    v2 = add_variable!(g, [2])
+    f1 = add_factor!(g, [10])
+    f2 = add_factor!(g, [20])
+
+    # Track which nodes were notified and their data
+    notified_nodes = Dict{Int, Tuple{Any, Bool}}()
+
+    # Add edge with callback using do-syntax
+    @test add_edge!(g, v1, f1, true) do node_id, node_data, edge_data
+        notified_nodes[node_id] = (node_data, edge_data)
+    end
+    @test notified_nodes[v1] == ([1], true)
+    @test notified_nodes[f1] == ([10], true)
+    empty!(notified_nodes)
+
+    # Add another edge
+    @test add_edge!(g, v2, f1, false) do node_id, node_data, edge_data
+        notified_nodes[node_id] = (node_data, edge_data)
+    end
+    @test notified_nodes[v2] == ([2], false)
+    @test notified_nodes[f1] == ([10], false)
+    empty!(notified_nodes)
+
+    # Test that callback is not called for existing edges
+    @test !add_edge!(g, v1, f1, true) do node_id, node_data, edge_data
+        notified_nodes[node_id] = (node_data, edge_data)
+    end
+    @test isempty(notified_nodes)
+
+    # Test that callback is called for both nodes in either order
+    @test add_edge!(g, v2, f2, true) do node_id, node_data, edge_data
+        notified_nodes[node_id] = (node_data, edge_data)
+    end
+    @test notified_nodes[v2] == ([2], true)
+    @test notified_nodes[f2] == ([20], true)
+end
