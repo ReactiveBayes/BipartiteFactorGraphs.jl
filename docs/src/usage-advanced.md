@@ -1,85 +1,13 @@
-# Usage Guide
+# Advanced Usage
 
-This guide demonstrates how to use BipartiteFactorGraphs.jl effectively for different applications.
-
-## Basic Usage
-
-### Creating a Graph
-
-First, create a bipartite factor graph with the desired data types:
-
-```julia
-using BipartiteFactorGraphs
-
-# Create a graph with Float64 for variable data, String for factor data, 
-# and Int for edge data
-g = BipartiteFactorGraph(Float64, String, Int)
-```
-
-The type parameters specify:
-1. The type for variable node data
-2. The type for factor node data
-3. The type for edge data
-
-You can use any Julia type for these parameters, including custom types.
-
-### Adding Nodes
-
-Add variable and factor nodes with their associated data:
-
-```julia
-# Add variables
-v1 = add_variable!(g, 1.0)  # returns vertex ID 1
-v2 = add_variable!(g, 2.0)  # returns vertex ID 2
-
-# Add factors
-f1 = add_factor!(g, "sum")  # returns vertex ID 3
-f2 = add_factor!(g, "product")  # returns vertex ID 4
-```
-
-### Connecting Nodes
-
-Connect variable and factor nodes with edges containing data:
-
-```julia
-# Connect variables and factors
-add_edge!(g, v1, f1, 10)  # Add edge between variable v1 and factor f1 with data 10
-add_edge!(g, v2, f1, 20)
-add_edge!(g, v2, f2, 30)
-```
-
-### Querying the Graph
-
-```julia
-# Get all variables and factors
-all_vars = collect(variables(g))
-all_factors = collect(factors(g))
-
-# Check node types
-println(is_variable(g, v1))  # true
-println(is_factor(g, f1))    # true
-
-# Get neighbors
-var_neighbors = variable_neighbors(g, f1)  # Get variable neighbors of factor f1
-fac_neighbors = factor_neighbors(g, v2)    # Get factor neighbors of variable v2
-
-# Count nodes
-println("Variables: ", num_variables(g))
-println("Factors: ", num_factors(g))
-
-# Get data
-var_data = get_variable_data(g, v1)  # 1.0
-fac_data = get_factor_data(g, f1)    # "sum"
-edge_data = get_edge_data(g, v1, f1) # 10
-```
-
-## Advanced Usage
-
-### Custom Data Types
+## Custom Data Types
 
 You can use custom types for variables, factors, and edges:
 
-```julia
+```@example advanced
+using BipartiteFactorGraphs
+using Test #hide
+
 struct VariableData
     name::String
     value::Float64
@@ -97,8 +25,11 @@ struct EdgeData
 end
 
 # Create graph with custom types
+@test BipartiteFactorGraph(VariableData, FactorData, EdgeData) isa BipartiteFactorGraph{VariableData, FactorData, EdgeData} #hide
 g = BipartiteFactorGraph(VariableData, FactorData, EdgeData)
+```
 
+```@example advanced
 # Add variable with custom data
 var_data = VariableData("x1", 0.5, [-1.0, 1.0])
 v1 = add_variable!(g, var_data)
@@ -110,13 +41,22 @@ f1 = add_factor!(g, factor_data)
 # Add edge with custom data
 edge_data = EdgeData(1.0, Dict(:message => "hello"))
 add_edge!(g, v1, f1, edge_data)
+
+@test get_variable_data(g, v1) == var_data #hide
+@test get_factor_data(g, f1) == factor_data #hide
+@test get_edge_data(g, v1, f1) == edge_data #hide
+
+nothing #hide
 ```
 
 ### Using a Different Dictionary Type
 
-By default, BipartiteFactorGraph uses `Dict` to store node and edge data. You can specify a different dictionary type:
+By default, BipartiteFactorGraph uses `Dict` to store node and edge data. You can specify a different dictionary type. For example, the package implements an extension for the `Dictionaries.jl` package.
 
-```julia
+!!! note
+    Dictionaries.jl do not subtype from the `AbstractDict` type, so internally `BipartiteFactorGraph` wraps the dictionary in a special wrapper type that implements the `AbstractDict` interface.
+
+```@example advanced
 using Dictionaries  # Make sure to add this package to your project
 
 # Create a graph using Dictionaries.jl
@@ -136,7 +76,7 @@ For large graphs, consider the following performance optimizations:
 
 Here's a simple example of how BipartiteFactorGraphs might be used in a belief propagation algorithm:
 
-```julia
+```@example inference
 using BipartiteFactorGraphs
 using LinearAlgebra
 
@@ -181,4 +121,6 @@ end
 
 # Run one iteration of belief update
 update_beliefs!(g)
+
+nothing #hide
 ``` 

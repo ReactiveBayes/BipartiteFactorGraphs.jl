@@ -1,4 +1,4 @@
-.PHONY: help docs docs-serve docs-clean test format check-format clean deps deps-docs deps-scripts
+.PHONY: help docs docs-serve docs-clean test format check-format clean deps deps-docs deps-scripts benchmark benchmark-compare
 
 # Colors for terminal output
 ifdef NO_COLOR
@@ -34,6 +34,10 @@ help:
 	@echo '  ${YELLOW}format${RESET}               Format Julia code'
 	@echo '  ${YELLOW}check-format${RESET}         Check Julia code formatting (does not modify files)'
 	@echo '  ${YELLOW}clean${RESET}                Clean all generated files'
+	@echo ''
+	@echo '${GREEN}Benchmark commands:${RESET}'
+	@echo '  ${YELLOW}benchmark${RESET}            Run project benchmarks'
+	@echo '  ${YELLOW}benchmark-compare${RESET}    Run project benchmarks with comparison against specified branch'
 	@echo ''
 	@echo '${GREEN}Help:${RESET}'
 	@echo '  ${YELLOW}help${RESET}                 Show this help message'
@@ -74,7 +78,7 @@ check-format: deps-scripts ## Check Julia code formatting (does not modify files
 benchmark: deps-scripts ## Run project benchmarks
 	julia --project=scripts/ scripts/bench.jl
 
-benchmark-compare: deps-scripts ## Run project benchmarks with comparison
+benchmark-compare: deps-scripts ## Run project benchmarks with comparison against specified branch
 	julia --project=scripts/ scripts/bench.jl --compare-branch $(branch)
 
 clean: docs-clean ## Clean all generated files

@@ -40,28 +40,6 @@ Benchmarks are run with the following configurations:
 - **Medium**: Average of 5 connections per node
 - **Dense**: Average of 10 connections per node
 
-## Latest Results
-
-Below are the latest benchmark results, showing median times for key operations:
-
-| Operation | Small Graph (ms) | Medium Graph (ms) | Large Graph (ms) |
-|-----------|------------------|-------------------|------------------|
-| Create empty graph | 0.001 | 0.001 | 0.001 |
-| Add 1 variable | 0.001 | 0.001 | 0.001 |
-| Add 1 factor | 0.001 | 0.001 | 0.001 |
-| Build sparse graph | 0.5 | 5.0 | 50.0 |
-| Build medium graph | 1.0 | 10.0 | 100.0 |
-| Build dense graph | 2.0 | 20.0 | 200.0 |
-| Iterate all variables | 0.001 | 0.01 | 0.1 |
-| Iterate all factors | 0.001 | 0.005 | 0.05 |
-| Get variable neighbors | 0.001 | 0.002 | 0.002 |
-| Get factor neighbors | 0.001 | 0.002 | 0.002 |
-| Access variable data | 0.001 | 0.001 | 0.001 |
-| Access factor data | 0.001 | 0.001 | 0.001 |
-| Access edge data | 0.001 | 0.001 | 0.001 |
-
-Note: These values are placeholders. For actual benchmark results, run the benchmarks on your system.
-
 ## Scaling Behavior
 
 BipartiteFactorGraphs.jl is designed to scale well with graph size and density:

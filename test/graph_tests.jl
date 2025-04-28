@@ -352,3 +352,28 @@ end
     @test !has_edge(g, v3, f1)
     @test !has_edge(g, v4, f1)
 end
+
+@testitem "Broadcasting over the graph with the get_variable_data function" begin
+    using BipartiteFactorGraphs
+
+    g = BipartiteFactorGraph(Float64, String, Bool)
+
+    v1 = add_variable!(g, 1.0)
+    v2 = add_variable!(g, 2.0)
+    v3 = add_variable!(g, 3.0)
+
+    f1 = add_factor!(g, "factor1")
+    f2 = add_factor!(g, "factor2")
+
+    add_edge!(g, v1, f1, true)
+    add_edge!(g, v2, f1, true)
+    add_edge!(g, v2, f2, true)
+    add_edge!(g, v3, f2, true)
+
+    @test Set(get_variable_data.(g, variables(g))) == Set([1.0, 2.0, 3.0])
+    @test Set(get_factor_data.(g, factors(g))) == Set(["factor1", "factor2"])
+
+    # `map` is not defined on the `Dictionaries` so we use `Iterators.map`
+    @test get_variable_data.(g, variables(g)) == collect(Iterators.map(v -> get_variable_data(g, v), variables(g)))
+    @test get_factor_data.(g, factors(g)) == collect(Iterators.map(f -> get_factor_data(g, f), factors(g)))
+end
