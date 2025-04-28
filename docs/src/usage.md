@@ -13,7 +13,7 @@ using BipartiteFactorGraphs
 
 # Create a graph with Float64 for variable data, String for factor data, 
 # and Int for edge data
-g = BipartiteFactorGraph{Float64, String, Int}()
+g = BipartiteFactorGraph(Float64, String, Int)
 ```
 
 The type parameters specify:
@@ -97,7 +97,7 @@ struct EdgeData
 end
 
 # Create graph with custom types
-g = BipartiteFactorGraph{VariableData, FactorData, EdgeData}()
+g = BipartiteFactorGraph(VariableData, FactorData, EdgeData)
 
 # Add variable with custom data
 var_data = VariableData("x1", 0.5, [-1.0, 1.0])
@@ -120,7 +120,7 @@ By default, BipartiteFactorGraph uses `Dict` to store node and edge data. You ca
 using Dictionaries  # Make sure to add this package to your project
 
 # Create a graph using Dictionaries.jl
-g = BipartiteFactorGraph{Float64, String, Int}(Dictionary)
+g = BipartiteFactorGraph(Float64, String, Int, Dictionary)
 ```
 
 ## Performance Tips
@@ -141,7 +141,7 @@ using BipartiteFactorGraphs
 using LinearAlgebra
 
 # Create a simple Gaussian factor graph
-g = BipartiteFactorGraph{Vector{Float64}, Function, Matrix{Float64}}()
+g = BipartiteFactorGraph(Vector{Float64}, Function, Matrix{Float64})
 
 # Add variable nodes (mean and covariance)
 v1 = add_variable!(g, [0.0, 0.0])  # Prior belief

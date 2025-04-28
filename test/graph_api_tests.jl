@@ -2,7 +2,7 @@
     using BipartiteFactorGraphs
     using Graphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Test empty graph properties
     @test Graphs.nv(g) == 0
@@ -47,7 +47,7 @@
     @test Graphs.density(g) == 4 / 6
 
     # Test with larger graph
-    h = BipartiteFactorGraph{Int, String, Bool}()
+    h = BipartiteFactorGraph(Int, String, Bool)
 
     # Add 10 variables and 5 factors
     for i in 1:10
@@ -84,7 +84,7 @@ end
     using Graphs
 
     # Test with only variables, no factors
-    g1 = BipartiteFactorGraph{Float64, String, Bool}()
+    g1 = BipartiteFactorGraph(Float64, String, Bool)
     for i in 1:5
         add_variable!(g1, Float64(i))
     end
@@ -94,7 +94,7 @@ end
     @test Graphs.density(g1) == 0.0  # No factors means no possible edges
 
     # Test with only factors, no variables
-    g2 = BipartiteFactorGraph{Float64, String, Bool}()
+    g2 = BipartiteFactorGraph(Float64, String, Bool)
     for i in 1:5
         add_factor!(g2, "factor$i")
     end
@@ -104,7 +104,7 @@ end
     @test Graphs.density(g2) == 0.0  # No variables means no possible edges
 
     # Test fully connected bipartite graph
-    g3 = BipartiteFactorGraph{Float64, String, Bool}()
+    g3 = BipartiteFactorGraph(Float64, String, Bool)
     for i in 1:3
         add_variable!(g3, Float64(i))
     end
@@ -139,7 +139,7 @@ end
     using BipartiteFactorGraphs
     using Graphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Add nodes
     v1 = add_variable!(g, 1.0)

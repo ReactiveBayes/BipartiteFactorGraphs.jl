@@ -1,7 +1,7 @@
 @testitem "Error handling for non-existent nodes" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Test accessing non-existent variable
     @test_throws KeyError get_variable_data(g, 1)
@@ -25,7 +25,7 @@ end
 @testitem "Edge data error handling" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     v1 = add_variable!(g, 1.0)
     v2 = add_variable!(g, 2.0)
@@ -46,7 +46,7 @@ end
 @testitem "Empty graph operations" begin
     using BipartiteFactorGraphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Test collections on empty graph
     @test isempty(variables(g))
@@ -61,7 +61,7 @@ end
     using BipartiteFactorGraphs
     using Graphs
 
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     v1 = add_variable!(g, 1.0)
     v2 = add_variable!(g, 2.0)
@@ -91,7 +91,7 @@ end
     using BipartiteFactorGraphs
 
     # Create a larger graph
-    g = BipartiteFactorGraph{Float64, String, Bool}()
+    g = BipartiteFactorGraph(Float64, String, Bool)
 
     # Add many variables and factors
     num_nodes = 1000
@@ -134,7 +134,7 @@ end
         metadata::Dict{Symbol, Any}
     end
 
-    g = BipartiteFactorGraph{Vector{Float64}, Dict{String, Any}, CustomEdgeData}()
+    g = BipartiteFactorGraph(Vector{Float64}, Dict{String, Any}, CustomEdgeData)
 
     # Add variable with array data
     v1 = add_variable!(g, [1.0, 2.0, 3.0])
