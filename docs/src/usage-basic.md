@@ -51,9 +51,9 @@ Connect variable and factor nodes with edges containing data with the [`add_edge
 
 ```@example usage
 # Connect variables and factors
-add_edge!(g, v1, f1, 10)  # Add edge between variable v1 and factor f1 with data 10
-add_edge!(g, v2, f1, 20)
-add_edge!(g, v2, f2, 30)
+e1 = add_edge!(g, v1, f1, 10)  # Add edge between variable v1 and factor f1 with data 10
+e2 = add_edge!(g, v2, f1, 20)
+e3 = add_edge!(g, v2, f2, 30)
 
 @test has_edge(g, v1, f1) #hide
 @test has_edge(g, v2, f1) #hide
@@ -193,4 +193,9 @@ See [`get_edge_data`](@ref)
 ```@example usage
 @test get_edge_data(g, v1, f1) == 10 #hide
 get_edge_data(g, v1, f1)
+```
+
+```@example usage
+@test get_edge_data(g, e1) == 10 #hide
+get_edge_data(g, e1)
 ```

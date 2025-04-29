@@ -87,6 +87,21 @@
     @test length(Graphs.outdegree(h)) == Graphs.nv(h)
 end
 
+@testitem "Return values of `add_*` functions should be usable in `get_data_*` functions" begin
+    using BipartiteFactorGraphs
+    using Graphs
+
+    g = BipartiteFactorGraph(Float64, String, Int)
+
+    v = add_variable!(g, 1.0)
+    f = add_factor!(g, "factor1")
+    e = add_edge!(g, v, f, 42)
+
+    @test get_variable_data(g, v) == 1.0
+    @test get_factor_data(g, f) == "factor1"
+    @test get_edge_data(g, e) == 42
+end
+
 @testitem "Special cases for graph properties" begin
     using BipartiteFactorGraphs
     using Graphs

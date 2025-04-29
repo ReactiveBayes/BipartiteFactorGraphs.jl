@@ -33,17 +33,18 @@ end
     v1 = add_variable!(g, 1.0)
     v2 = add_variable!(g, 2.0)
     f1 = add_factor!(g, "factor1")
+    e1 = add_edge!(g, v1, f1, true)
 
-    add_edge!(g, v1, f1, true)
+    @test get_edge_data(g, e1) === true
 
     # Test accessing non-existent edge
     @test_throws KeyError get_edge_data(g, v2, f1)
 
-    # Test adding duplicate edge (should return false)
-    @test !add_edge!(g, v1, f1, false)
+    # Test adding duplicate edge
+    @test e1 == add_edge!(g, v1, f1, false)
 
-    # Original edge data should remain unchanged
-    @test get_edge_data(g, v1, f1) === true
+    # Original edge data should change
+    @test get_edge_data(g, e1) === false
 end
 
 @testitem "Empty graph operations" begin

@@ -90,9 +90,9 @@ end
     f2 = add_factor!(g, "factor2")
 
     # Add edges
-    @test add_edge!(g, v1, f1, true)
-    @test add_edge!(g, v2, f1, false)
-    @test add_edge!(g, v2, f2, true)
+    e1 = add_edge!(g, v1, f1, true)
+    e2 = add_edge!(g, v2, f1, false)
+    e3 = add_edge!(g, v2, f2, true)
 
     # Test edge existence
     @test has_edge(g, v1, f1)
@@ -105,16 +105,30 @@ end
     @test get_edge_data(g, v2, f1) === false
     @test get_edge_data(g, v2, f2) === true
 
+    @test get_edge_data(g, (v1, f1)) === true
+    @test get_edge_data(g, (v2, f1)) === false
+    @test get_edge_data(g, (v2, f2)) === true
+
+    @test get_edge_data(g, v1 => f1) === true
+    @test get_edge_data(g, v2 => f1) === false
+    @test get_edge_data(g, v2 => f2) === true
+
+    @test get_edge_data(g, BipartiteFactorGraphs.UnorderedPair(v1, f1)) === true
+    @test get_edge_data(g, BipartiteFactorGraphs.UnorderedPair(v2, f1)) === false
+    @test get_edge_data(g, BipartiteFactorGraphs.UnorderedPair(v2, f2)) === true
+
     # Test adding edge in reversed order
     v3 = add_variable!(g, 3.0)
     f3 = add_factor!(g, "factor3")
-    @test add_edge!(g, f3, v3, false)  # Note order: factor, variable
+    e3 = add_edge!(g, f3, v3, false)  # Note order: factor, variable
     @test has_edge(g, v3, f3)
     @test has_edge(g, f3, v3)
-    @test get_edge_data(g, v3, f3) === false
+    @test get_edge_data(g, e3) === false
 
     # Test duplicate edge addition
-    @test !add_edge!(g, v1, f1, false)  # Should return false for existing edge
+    @test e1 == add_edge!(g, v1, f1, false)
+    @test e2 == add_edge!(g, v2, f1, false)
+    @test e3 == add_edge!(g, v3, f3, true)
 end
 
 @testitem "Neighbors" begin
@@ -376,4 +390,13 @@ end
     # `map` is not defined on the `Dictionaries` so we use `Iterators.map`
     @test get_variable_data.(g, variables(g)) == collect(Iterators.map(v -> get_variable_data(g, v), variables(g)))
     @test get_factor_data.(g, factors(g)) == collect(Iterators.map(f -> get_factor_data(g, f), factors(g)))
+end
+
+@testitem "UnorderedPair should implement unordered equality" begin
+    using BipartiteFactorGraphs
+
+    p1 = BipartiteFactorGraphs.UnorderedPair(1, 2)
+    p2 = BipartiteFactorGraphs.UnorderedPair(2, 1)
+    @test p1 == p2
+    @test isequal(p1, p2)
 end

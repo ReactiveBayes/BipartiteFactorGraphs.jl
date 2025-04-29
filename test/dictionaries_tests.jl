@@ -88,9 +88,9 @@ end
     f2 = add_factor!(g, "factor2")
 
     # Add edges
-    @test add_edge!(g, v1, f1, true)
-    @test add_edge!(g, v2, f1, false)
-    @test add_edge!(g, v2, f2, true)
+    e1 = add_edge!(g, v1, f1, true)
+    e2 = add_edge!(g, v2, f1, false)
+    e3 = add_edge!(g, v2, f2, true)
 
     # Test edge existence
     @test has_edge(g, v1, f1)
@@ -106,13 +106,14 @@ end
     # Test adding edge in reversed order
     v3 = add_variable!(g, 3.0)
     f3 = add_factor!(g, "factor3")
-    @test add_edge!(g, f3, v3, false)  # Note order: factor, variable
+    e3 = add_edge!(g, f3, v3, false)  # Note order: factor, variable
     @test has_edge(g, v3, f3)
     @test has_edge(g, f3, v3)
+    @test get_edge_data(g, e3) === false
     @test get_edge_data(g, v3, f3) === false
 
     # Test duplicate edge addition
-    @test !add_edge!(g, v1, f1, false)  # Should return false for existing edge
+    @test e1 == add_edge!(g, v1, f1, false) 
 end
 
 @testitem "Neighbors with Dictionary from Dictionaries.jl" begin

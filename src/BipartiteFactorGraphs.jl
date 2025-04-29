@@ -166,12 +166,10 @@ Edge data is stored with the original order of vertices (var, fac), but can be a
 in either order using get_edge_data.
 """
 function add_edge!(g::BipartiteFactorGraph{TVar, TFac, E}, var::Int, fac::Int, data::E) where {TVar, TFac, E}
-    if Graphs.add_edge!(g.graph, var, fac)
-        p = UnorderedPair(var, fac)
-        g.edge_data[p] = data
-        return true
-    end
-    return false
+    Graphs.add_edge!(g.graph, var, fac)
+    p = UnorderedPair(var, fac)
+    g.edge_data[p] = data
+    return p
 end
 
 """
@@ -202,6 +200,36 @@ function get_edge_data(g::BipartiteFactorGraph{TVar, TFac, E}, v1::Int, v2::Int)
     # Try both orderings since we're dealing with an undirected graph
     p = UnorderedPair(v1, v2)
     return g.edge_data[p]
+end
+
+"""
+    get_edge_data(g::BipartiteFactorGraph{TVar,TFac,E}, p::UnorderedPair) where {TVar,TFac,E}
+
+Get data associated with edge between nodes `p.a` and `p.b`.
+Since the graph is undirected, the order of `p.a` and `p.b` doesn't matter.
+"""
+function get_edge_data(g::BipartiteFactorGraph{TVar, TFac, E}, p::UnorderedPair) where {TVar, TFac, E}
+    return g.edge_data[p]
+end
+
+"""
+    get_edge_data(g::BipartiteFactorGraph{TVar,TFac,E}, p::Tuple{Int, Int}) where {TVar,TFac,E}
+
+Get data associated with edge between nodes `p[1]` and `p[2]`.
+Since the graph is undirected, the order of `p[1]` and `p[2]` doesn't matter.
+"""
+function get_edge_data(g::BipartiteFactorGraph{TVar, TFac, E}, p::Tuple{Int, Int}) where {TVar, TFac, E}
+    return g.edge_data[UnorderedPair(p[1], p[2])]
+end
+
+"""
+    get_edge_data(g::BipartiteFactorGraph{TVar,TFac,E}, p::Pair{Int, Int}) where {TVar,TFac,E}
+
+Get data associated with edge between nodes `p.first` and `p.second`.
+Since the graph is undirected, the order of `p.first` and `p.second` doesn't matter.
+"""
+function get_edge_data(g::BipartiteFactorGraph{TVar, TFac, E}, p::Pair{Int, Int}) where {TVar, TFac, E}
+    return g.edge_data[UnorderedPair(p.first, p.second)]
 end
 
 """
