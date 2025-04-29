@@ -377,3 +377,26 @@ end
     @test get_variable_data.(g, variables(g)) == collect(Iterators.map(v -> get_variable_data(g, v), variables(g)))
     @test get_factor_data.(g, factors(g)) == collect(Iterators.map(f -> get_factor_data(g, f), factors(g)))
 end
+
+@testitem "`get_data_*` methods should be type-stable" begin
+    using BipartiteFactorGraphs
+    using JET
+    using BenchmarkTools
+
+    g = BipartiteFactorGraph(Float64, String, Vector{Float64})
+    v1 = add_variable!(g, 1.0)
+    f1 = add_factor!(g, "factor1")
+    add_edge!(g, v1, f1, [1.0, 2.0, 3.0])
+
+    @test get_variable_data(g, v1) == 1.0
+    @test get_factor_data(g, f1) == "factor1"
+    @test get_edge_data(g, v1, f1) == [1.0, 2.0, 3.0]
+
+    JET.@test_opt get_variable_data(g, v1)
+    JET.@test_opt get_factor_data(g, f1)
+    JET.@test_opt get_edge_data(g, v1, f1)
+
+    @test @ballocated(get_variable_data($g, $v1)) == 0
+    @test @ballocated(get_factor_data($g, $f1)) == 0
+    @test @ballocated(get_edge_data($g, $v1, $f1)) == 0
+end

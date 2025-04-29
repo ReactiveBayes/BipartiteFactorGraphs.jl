@@ -96,7 +96,7 @@ struct BipartiteFactorGraph{
     E,
     DVars <: AbstractDict{Int, TVar},
     DFacs <: AbstractDict{Int, TFac},
-    DE <: AbstractDict{UnorderedPair, E}
+    DE <: AbstractDict{UnorderedPair{Int}, E}
 }
     graph::SimpleGraph{Int}
     variable_data::DVars
@@ -111,7 +111,7 @@ end
 function BipartiteFactorGraph(::Type{TVar}, ::Type{TFac}, ::Type{E}, dict_type::Type{D} = Dict) where {TVar, TFac, E, D}
     VariableDictType = make_dict_type(dict_type, Int, TVar)
     FactorDictType = make_dict_type(dict_type, Int, TFac)
-    EdgeDictType = make_dict_type(dict_type, UnorderedPair, E)
+    EdgeDictType = make_dict_type(dict_type, UnorderedPair{Int}, E)
     return BipartiteFactorGraph{TVar, TFac, E, VariableDictType, FactorDictType, EdgeDictType}(
         SimpleGraph{Int}(), VariableDictType(), FactorDictType(), EdgeDictType()
     )
