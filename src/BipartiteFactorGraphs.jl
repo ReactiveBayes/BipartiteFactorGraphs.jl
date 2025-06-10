@@ -2,7 +2,21 @@ module BipartiteFactorGraphs
 
 using Graphs
 import Graphs:
-    add_edge!, has_edge, edges, neighbors, nv, ne, all_neighbors, degree, indegree, outdegree, density, is_bipartite
+    AbstractGraph,
+    vertices,
+    has_vertex,
+    add_edge!,
+    has_edge,
+    edges,
+    neighbors,
+    nv,
+    ne,
+    all_neighbors,
+    degree,
+    indegree,
+    outdegree,
+    density,
+    is_bipartite
 
 export BipartiteFactorGraph,
     add_variable!,
@@ -19,6 +33,8 @@ export BipartiteFactorGraph,
     num_variables,
     num_factors,
     # Reexport used Graphs functions
+    vertices,
+    has_vertex,
     add_edge!,
     has_edge,
     edges,
@@ -97,7 +113,7 @@ struct BipartiteFactorGraph{
     DVars <: AbstractDict{Int, TVar},
     DFacs <: AbstractDict{Int, TFac},
     DE <: AbstractDict{UnorderedPair{Int}, E}
-}
+} <: AbstractGraph{Int}
     graph::SimpleGraph{Int}
     variable_data::DVars
     factor_data::DFacs
@@ -118,9 +134,8 @@ function BipartiteFactorGraph(::Type{TVar}, ::Type{TFac}, ::Type{E}, dict_type::
 end
 
 make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D <: AbstractDict, K, V} = D{K, V}
-make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D, K, V} = throw(
-    ArgumentError("Unsupported dictionary type: $D. Must be a subtype of AbstractDict.")
-)
+make_dict_type(::Type{D}, ::Type{K}, ::Type{V}) where {D, K, V} =
+    throw(ArgumentError("Unsupported dictionary type: $D. Must be a subtype of AbstractDict."))
 
 function Base.show(io::IO, g::BipartiteFactorGraph{TVar, TFac, E}) where {TVar, TFac, E}
     n_variables = length(g.variable_data)
@@ -288,6 +303,26 @@ num_variables(g::BipartiteFactorGraph) = length(g.variable_data)
 Get the number of factor nodes in the graph.
 """
 num_factors(g::BipartiteFactorGraph) = length(g.factor_data)
+
+"""
+    vertices(g::BipartiteFactorGraph)
+
+Get all vertices in the graph. Note, that it returns vertices that represent both variable and factor nodes.
+Use [`variables`](@ref) and [`factors`](@ref) to get only variable or factor nodes.
+"""
+function Graphs.vertices(g::BipartiteFactorGraph)
+    return Graphs.vertices(g.graph)
+end
+
+"""
+    has_vertex(g::BipartiteFactorGraph, v::Int)
+
+Check if vertex `v` is in the graph. Note, that it returns true for both variable and factor nodes.
+Use [`is_variable`](@ref) and [`is_factor`](@ref) to check existence of a node with a specific type.
+"""
+function Graphs.has_vertex(g::BipartiteFactorGraph, v::Int)
+    return Graphs.has_vertex(g.graph, v)
+end
 
 """
     has_edge(g::BipartiteFactorGraph, var::Int, fac::Int)

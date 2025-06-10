@@ -52,6 +52,8 @@ Functions that compute properties of the graph:
 ```@docs
 nv
 ne
+vertices
+has_vertex
 has_edge
 edges
 neighbors

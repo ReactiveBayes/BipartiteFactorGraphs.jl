@@ -8,6 +8,9 @@
     @test Graphs.nv(g) == 0
     @test Graphs.ne(g) == 0
     @test Graphs.density(g) == 0.0
+    @test Graphs.eltype(g) == Int
+
+    @test isempty(vertices(g))
 
     # Add some nodes and edges
     v1 = add_variable!(g, 1.0)
@@ -17,7 +20,42 @@
     f1 = add_factor!(g, "factor1")
     f2 = add_factor!(g, "factor2")
 
+    @test !isempty(vertices(g))
+    @test length(vertices(g)) == 5
     @test length(edges(g)) == 0
+
+    @test v1 in vertices(g)
+    @test f1 in vertices(g)
+    @test v2 in vertices(g)
+    @test f2 in vertices(g)
+    @test v3 in vertices(g)
+
+    @test v1 in variables(g)
+    @test v2 in variables(g)
+    @test v3 in variables(g)
+
+    @test f1 in factors(g)
+    @test f2 in factors(g)
+
+    @test !(v1 in factors(g))
+    @test !(v2 in factors(g))
+    @test !(v3 in factors(g))
+
+    @test !(f1 in variables(g))
+    @test !(f2 in variables(g))
+
+    @test has_vertex(g, v1)
+    @test has_vertex(g, v2)
+    @test has_vertex(g, v3)
+    @test has_vertex(g, f1)
+    @test has_vertex(g, f2)
+    @test !has_vertex(g, -1)
+
+    @test !has_edge(g, v1, f1)
+    @test !has_edge(g, v2, f1)
+    @test !has_edge(g, v2, f2)
+    @test !has_edge(g, v3, f2)
+    @test !has_edge(g, v1, f2)
 
     add_edge!(g, v1, f1, true)
     add_edge!(g, v2, f1, true)
@@ -25,6 +63,12 @@
     add_edge!(g, v3, f2, true)
 
     @test length(edges(g)) == 4
+
+    @test has_edge(g, v1, f1)
+    @test has_edge(g, v2, f1)
+    @test has_edge(g, v2, f2)
+    @test has_edge(g, v3, f2)
+    @test !has_edge(g, v1, f2)
 
     # Test graph properties
     @test Graphs.nv(g) == 5  # 3 variables + 2 factors
