@@ -58,9 +58,12 @@ has_edge
 edges
 neighbors
 all_neighbors
+inneighbors
+outneighbors
 degree
 indegree
 outdegree
 density
 is_bipartite
+is_directed
 ``` 

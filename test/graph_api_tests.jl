@@ -5,7 +5,6 @@
     g = BipartiteFactorGraph(Float64, String, Bool)
 
     @test !is_directed(g)
-    @test is_undirected(g)
 
     # Test empty graph properties
     @test Graphs.nv(g) == 0

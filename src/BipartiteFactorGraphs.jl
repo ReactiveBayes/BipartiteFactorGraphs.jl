@@ -19,8 +19,7 @@ import Graphs:
     outdegree,
     density,
     is_bipartite,
-    is_directed,
-    is_undirected
+    is_directed
 
 export BipartiteFactorGraph,
     add_variable!,
@@ -53,8 +52,7 @@ export BipartiteFactorGraph,
     outdegree,
     density,
     is_bipartite,
-    is_directed,
-    is_undirected
+    is_directed
 
 struct UnorderedPair{T}
     a::T
@@ -473,15 +471,6 @@ Check if the graph is directed. For BipartiteFactorGraph this is always false si
 """
 function is_directed(g::BipartiteFactorGraph)
     return false
-end
-
-"""
-    is_undirected(g::BipartiteFactorGraph)
-
-Check if the graph is undirected. For BipartiteFactorGraph this is always true since the graph is undirected.
-"""
-function is_undirected(g::BipartiteFactorGraph)
-    return true
 end
 
 end # module
