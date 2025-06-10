@@ -12,11 +12,15 @@ import Graphs:
     nv,
     ne,
     all_neighbors,
+    inneighbors,
+    outneighbors,
     degree,
     indegree,
     outdegree,
     density,
-    is_bipartite
+    is_bipartite,
+    is_directed,
+    is_undirected
 
 export BipartiteFactorGraph,
     add_variable!,
@@ -42,11 +46,15 @@ export BipartiteFactorGraph,
     nv,
     ne,
     all_neighbors,
+    inneighbors,
+    outneighbors,
     degree,
     indegree,
     outdegree,
     density,
-    is_bipartite
+    is_bipartite,
+    is_directed,
+    is_undirected
 
 struct UnorderedPair{T}
     a::T
@@ -376,6 +384,24 @@ function all_neighbors(g::BipartiteFactorGraph, v::Int)
 end
 
 """
+    inneighbors(g::BipartiteFactorGraph, v::Int)
+
+Return a list of all in-neighbors of vertex `v` in graph `g`.
+"""
+function inneighbors(g::BipartiteFactorGraph, v::Int)
+    return Graphs.inneighbors(g.graph, v)
+end
+
+"""
+    outneighbors(g::BipartiteFactorGraph, v::Int)
+
+Return a list of all out-neighbors of vertex `v` in graph `g`.
+"""
+function outneighbors(g::BipartiteFactorGraph, v::Int)
+    return Graphs.outneighbors(g.graph, v)
+end
+
+"""
     degree(g::BipartiteFactorGraph[, v])
 
 Return a vector corresponding to the number of edges connected to each vertex in graph `g`.
@@ -438,6 +464,24 @@ Check if the graph is bipartite.
 """
 function is_bipartite(g::BipartiteFactorGraph)
     return Graphs.is_bipartite(g.graph)
+end
+
+"""
+    is_directed(g::BipartiteFactorGraph)
+
+Check if the graph is directed. For BipartiteFactorGraph this is always false since the graph is undirected.
+"""
+function is_directed(g::BipartiteFactorGraph)
+    return false
+end
+
+"""
+    is_undirected(g::BipartiteFactorGraph)
+
+Check if the graph is undirected. For BipartiteFactorGraph this is always true since the graph is undirected.
+"""
+function is_undirected(g::BipartiteFactorGraph)
+    return true
 end
 
 end # module

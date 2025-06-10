@@ -4,6 +4,9 @@
 
     g = BipartiteFactorGraph(Float64, String, Bool)
 
+    @test !is_directed(g)
+    @test is_undirected(g)
+
     # Test empty graph properties
     @test Graphs.nv(g) == 0
     @test Graphs.ne(g) == 0
@@ -69,6 +72,18 @@
     @test has_edge(g, v2, f2)
     @test has_edge(g, v3, f2)
     @test !has_edge(g, v1, f2)
+
+    @test inneighbors(g, v1) == [f1]
+    @test inneighbors(g, v2) == [f1, f2]
+    @test inneighbors(g, v3) == [f2]
+    @test inneighbors(g, f1) == [v1, v2]
+    @test inneighbors(g, f2) == [v2, v3]
+
+    @test outneighbors(g, v1) == [f1]
+    @test outneighbors(g, v2) == [f1, f2]
+    @test outneighbors(g, v3) == [f2]
+    @test outneighbors(g, f1) == [v1, v2]
+    @test outneighbors(g, f2) == [v2, v3]
 
     # Test graph properties
     @test Graphs.nv(g) == 5  # 3 variables + 2 factors
