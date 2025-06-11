@@ -2,7 +2,24 @@ module BipartiteFactorGraphs
 
 using Graphs
 import Graphs:
-    add_edge!, has_edge, edges, neighbors, nv, ne, all_neighbors, degree, indegree, outdegree, density, is_bipartite
+    AbstractGraph,
+    vertices,
+    has_vertex,
+    add_edge!,
+    has_edge,
+    edges,
+    neighbors,
+    nv,
+    ne,
+    all_neighbors,
+    inneighbors,
+    outneighbors,
+    degree,
+    indegree,
+    outdegree,
+    density,
+    is_bipartite,
+    is_directed
 
 export BipartiteFactorGraph,
     add_variable!,
@@ -19,6 +36,8 @@ export BipartiteFactorGraph,
     num_variables,
     num_factors,
     # Reexport used Graphs functions
+    vertices,
+    has_vertex,
     add_edge!,
     has_edge,
     edges,
@@ -26,11 +45,14 @@ export BipartiteFactorGraph,
     nv,
     ne,
     all_neighbors,
+    inneighbors,
+    outneighbors,
     degree,
     indegree,
     outdegree,
     density,
-    is_bipartite
+    is_bipartite,
+    is_directed
 
 struct UnorderedPair{T}
     a::T
@@ -97,7 +119,7 @@ struct BipartiteFactorGraph{
     DVars <: AbstractDict{Int, TVar},
     DFacs <: AbstractDict{Int, TFac},
     DE <: AbstractDict{UnorderedPair{Int}, E}
-}
+} <: AbstractGraph{Int}
     graph::SimpleGraph{Int}
     variable_data::DVars
     factor_data::DFacs
@@ -290,6 +312,26 @@ Get the number of factor nodes in the graph.
 num_factors(g::BipartiteFactorGraph) = length(g.factor_data)
 
 """
+    vertices(g::BipartiteFactorGraph)
+
+Get all vertices in the graph. Note, that it returns vertices that represent both variable and factor nodes.
+Use [`variables`](@ref) and [`factors`](@ref) to get only variable or factor nodes.
+"""
+function Graphs.vertices(g::BipartiteFactorGraph)
+    return Graphs.vertices(g.graph)
+end
+
+"""
+    has_vertex(g::BipartiteFactorGraph, v::Int)
+
+Check if vertex `v` is in the graph. Note, that it returns true for both variable and factor nodes.
+Use [`is_variable`](@ref) and [`is_factor`](@ref) to check existence of a node with a specific type.
+"""
+function Graphs.has_vertex(g::BipartiteFactorGraph, v::Int)
+    return Graphs.has_vertex(g.graph, v)
+end
+
+"""
     has_edge(g::BipartiteFactorGraph, var::Int, fac::Int)
 
 Check if there is an edge between variable node `var` and factor node `fac`.
@@ -338,6 +380,24 @@ This is equivalent to `neighbors(g, v)` for undirected graphs.
 """
 function all_neighbors(g::BipartiteFactorGraph, v::Int)
     return Graphs.neighbors(g.graph, v)
+end
+
+"""
+    inneighbors(g::BipartiteFactorGraph, v::Int)
+
+Return a list of all in-neighbors of vertex `v` in graph `g`.
+"""
+function inneighbors(g::BipartiteFactorGraph, v::Int)
+    return Graphs.inneighbors(g.graph, v)
+end
+
+"""
+    outneighbors(g::BipartiteFactorGraph, v::Int)
+
+Return a list of all out-neighbors of vertex `v` in graph `g`.
+"""
+function outneighbors(g::BipartiteFactorGraph, v::Int)
+    return Graphs.outneighbors(g.graph, v)
 end
 
 """
@@ -403,6 +463,15 @@ Check if the graph is bipartite.
 """
 function is_bipartite(g::BipartiteFactorGraph)
     return Graphs.is_bipartite(g.graph)
+end
+
+"""
+    is_directed(g::BipartiteFactorGraph)
+
+Check if the graph is directed. For BipartiteFactorGraph this is always false since the graph is undirected.
+"""
+function is_directed(g::BipartiteFactorGraph)
+    return false
 end
 
 end # module
